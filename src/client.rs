@@ -1,12 +1,17 @@
 use crate::api;
+use crate::errors::BinanceContentError;
+use crate::errors::Error;
+use crate::errors::Result;
 use crate::utils;
 use reqwest::header::HeaderMap;
 use reqwest::header::HeaderValue;
-use reqwest::header::InvalidHeaderValue;
 use reqwest::header::CONTENT_TYPE;
+use reqwest::Response;
+use reqwest::StatusCode;
 use reqwest::Url;
 use ring::hmac as rhmac;
 use serde::de::DeserializeOwned;
+use serde_json::from_str;
 use std::str::FromStr;
 
 pub struct Client {
@@ -40,15 +45,15 @@ impl RequestContent {
         }
     }
 
-    fn get_timestamp(&self) -> u128 {
+    pub fn get_timestamp(&self) -> u128 {
         self.timestamp
     }
 
-    fn get_nonce(&self) -> &str {
+    pub fn get_nonce(&self) -> &str {
         self.nonce.as_str()
     }
 
-    fn get_body(&self) -> &str {
+    pub fn get_body(&self) -> &str {
         match &self.body {
             Some(body) => body.as_str(),
             None => "",
@@ -64,7 +69,7 @@ impl RequestContent {
         )
     }
 
-    pub fn sign(&self, api_secret: &str) -> String {
+    fn sign(&self, api_secret: &str) -> String {
         let key = rhmac::Key::new(rhmac::HMAC_SHA512, api_secret.as_bytes());
         let raw_signature = rhmac::sign(&key, self.signature_payload().as_bytes());
         hex::encode_upper(raw_signature.as_ref())
@@ -87,47 +92,79 @@ impl Client {
         }
     }
 
-    pub async fn post_signed<T: DeserializeOwned>(
+    pub async fn post_signed_de<T: DeserializeOwned>(
         &self,
         endpoint: api::API,
-        body: Option<String>,
-    ) -> Result<T, reqwest::Error> {
-        let request_content = RequestContent::from_body(body);
+        request: Option<String>,
+    ) -> Result<T> {
+        let r = self.post_signed(endpoint, request).await?;
+        let t = from_str(&r)?;
+        Ok(t)
+    }
+
+    pub async fn post_signed_s<T: DeserializeOwned, S: serde::Serialize>(
+        &self,
+        endpoint: api::API,
+        serializable: Option<S>,
+    ) -> Result<T> {
+        let request_str: String = if let Some(serializable) = serializable {
+            serde_json::to_string(&serializable)?
+        } else {
+            "".to_string()
+        };
+        self.post_signed_de(endpoint, Some(request_str)).await
+    }
+
+    pub async fn post_signed(&self, endpoint: api::API, request: Option<String>) -> Result<String> {
+        let request_content = RequestContent::from_body(request);
         let payload_signature = request_content.sign(&self.secret_key);
         let payload = request_content.get_body();
-        let headers = self
-            .get_header_map(
-                request_content.get_timestamp(),
-                request_content.get_nonce(),
-                payload_signature.as_str(),
-            )
-            .unwrap();
+        let headers = self.build_headers(
+            request_content.get_timestamp(),
+            request_content.get_nonce(),
+            payload_signature.as_str(),
+        )?;
         self.post(endpoint, payload.to_string(), headers).await
     }
 
-    pub async fn post<T: DeserializeOwned>(
+    pub async fn post(
         &self,
         endpoint: api::API,
         body: String,
         headers: HeaderMap<HeaderValue>,
-    ) -> Result<T, reqwest::Error> {
+    ) -> Result<String> {
         let url = self.host.join(&String::from(endpoint)).unwrap();
-        self.inner_client
+        let response = self
+            .inner_client
             .post(url)
             .headers(headers)
             .body(body)
             .send()
-            .await?
-            .json()
-            .await
+            .await?;
+        self.handler(response).await
     }
 
-    fn get_header_map(
-        &self,
-        timestamp: u128,
-        nonce: &str,
-        signature: &str,
-    ) -> Result<HeaderMap, InvalidHeaderValue> {
+    async fn handler(&self, response: Response) -> Result<String> {
+        match response.status() {
+            StatusCode::OK => {
+                let body = response.bytes().await?;
+                let result = std::str::from_utf8(&body);
+                Ok(result?.to_string())
+            }
+            StatusCode::INTERNAL_SERVER_ERROR => Err(Error::InternalServerError),
+            StatusCode::SERVICE_UNAVAILABLE => Err(Error::ServiceUnavailable),
+            StatusCode::UNAUTHORIZED => Err(Error::Unauthorized),
+            StatusCode::BAD_REQUEST => {
+                let error: BinanceContentError = response.json().await?;
+                Err(match (error.code, &error.error_message) {
+                    _ => Error::BinanceError { response: error },
+                })
+            }
+            s => Err(Error::Msg(format!("Received response: {:?}", s))),
+        }
+    }
+
+    fn build_headers(&self, timestamp: u128, nonce: &str, signature: &str) -> Result<HeaderMap> {
         let header_keys = [
             "BinancePay-Timestamp",
             "BinancePay-Nonce",
