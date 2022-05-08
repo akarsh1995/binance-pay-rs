@@ -43,7 +43,7 @@ async fn main() {
         },
     };
 
-    let create_order_result = order.post(client).await.unwrap();
+    let create_order_result = order.post(&client).await.unwrap();
     println!("{:?}", create_order_result);
 }
 ```
