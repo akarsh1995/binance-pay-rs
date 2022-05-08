@@ -11,7 +11,7 @@ pub enum API {
 impl From<API> for String {
     fn from(item: API) -> Self {
         String::from(match item {
-            CreateOrder => "/binancepay/openapi/v2/order",
+            API::CreateOrder => "/binancepay/openapi/v2/order",
         })
     }
 }
