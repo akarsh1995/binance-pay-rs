@@ -2,6 +2,15 @@
 name = "binance-pay-rs"
 version = "0.1.0"
 edition = "2021"
+authors = ["Akarsh Jain <contact@akar.sh>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/akarsh1995/binance-pay-rs"
+description = """
+Unofficial Rust Library for the Binance Pay API
+"""
+keywords = ["bpay", "binance", "binance-pay-api"]
+categories = ["web-programming", "api-bindings", "asynchronous"]
 
 [lib]
 name = "bpay"
