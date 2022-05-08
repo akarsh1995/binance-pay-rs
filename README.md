@@ -47,4 +47,24 @@ async fn main() {
     println!("{:?}", create_order_result);
 }
 ```
+# Roadmap
 
+- [ ] v0.2.0
+    - [ ] Add documentation
+    - [ ] Fetch certificate
+    - [ ] Webhook notification signature verification
+    - [ ] Order webhook notification
+    - [ ] Query Order 
+    - [ ] Close Order 
+    - [ ] Refund Order
+    - [ ] Refund Order Notification 
+    - [ ] Wallet balance query 
+
+- [ ] v0.3.0
+    - [ ] Transfer Funds 
+    - [ ] Query Transfer Result
+    - [ ] Create Sub Merchant
+    - [ ] Query Refund Order
+    - [ ] Batch Payout
+    - [ ] Payout Notification
+    - [ ] Payout Query 
