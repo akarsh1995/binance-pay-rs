@@ -12,6 +12,7 @@ use reqwest::Url;
 use ring::hmac as rhmac;
 use serde::de::DeserializeOwned;
 use serde_json::from_str;
+use std::env;
 use std::str::FromStr;
 
 pub struct Client {
@@ -92,6 +93,14 @@ impl Client {
         }
     }
 
+    pub fn from_env() -> Self {
+        let api_key = env::var("BINANCE_API_KEY").unwrap();
+        let secret_key = env::var("BINANCE_API_SECRET").unwrap();
+        let host =
+            env::var("BINANCE_HOST").unwrap_or_else(|_| "https://bpay.binanceapi.com".into());
+        Self::new(Some(api_key), Some(secret_key), host)
+    }
+
     pub async fn post_signed_de<T: DeserializeOwned>(
         &self,
         endpoint: api::API,
@@ -105,10 +114,15 @@ impl Client {
     pub async fn post_signed_s<T: DeserializeOwned, S: serde::Serialize>(
         &self,
         endpoint: api::API,
-        serializable: Option<S>,
+        serializable: Option<&S>,
     ) -> Result<T> {
         let request_str: String = if let Some(serializable) = serializable {
-            serde_json::to_string(&serializable)?
+            let res = serde_json::to_string(serializable)?;
+            if res == "{}" {
+                "".to_string()
+            } else {
+                res
+            }
         } else {
             "".to_string()
         };

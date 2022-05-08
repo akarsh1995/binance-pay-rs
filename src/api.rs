@@ -1,5 +1,3 @@
-use reqwest::Url;
-
 pub enum API {
     CreateOrder,
 }
