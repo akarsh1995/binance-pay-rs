@@ -1,3 +1,6 @@
+//! Order request and response structure that's laid out in the API documentation.
+//! [Create Order V2 Documentation](https://developers.binance.com/docs/binance-pay/api-order-create-v2)
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -25,6 +28,7 @@ pub struct Env {
     pub terminal_type: TerminalType,
 }
 
+/// The type of the goods for the order
 #[derive(Serialize, Debug)]
 pub enum GoodsType {
     #[serde(rename = "01")]
@@ -93,16 +97,22 @@ pub enum GoodsCategory {
 pub struct Goods {
     pub goods_type: GoodsType,
 
+    /// Goods category id.
     pub goods_category: GoodsCategory,
 
+    /// The unique ID to identify the goods.
     pub reference_goods_id: String,
 
+    /// Goods name limited to 256 characters.
     pub goods_name: String,
 
+    /// Goods detail limited to 256 characters
     #[serde(skip_serializing_if = "Option::is_none")]
     pub goods_detail: Option<String>,
 }
 
+/// Order currency in upper case. only "BUSD","USDT","MBOX" can be accepted,
+/// fiat NOT supported.
 #[derive(Serialize, Debug)]
 pub enum Currency {
     BUSD,
@@ -113,10 +123,14 @@ pub enum Currency {
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Order {
+    /// User's device environment information.
     pub env: Env,
 
+    /// The order id, Unique identifier for the request letter or digit,
+    /// no other symbol allowed, maximum length 32
     pub merchant_trade_no: String,
 
+    /// Amount Range: `0.01` - `20000`
     pub order_amount: f32,
 
     pub currency: Currency,
@@ -153,21 +167,22 @@ pub struct CreateOrderResult {
     /// same as terminalType in request data
     pub terminal_type: TerminalType,
 
-    ///expire time in milli seconds
+    /// expire time in milli seconds
     pub expire_time: u128,
 
-    ///qr code img link
+    /// qr code img link
     pub qrcode_link: String,
 
-    /// qr contend info
+    /// qr content decoded info
     pub qr_content: String,
 
     /// binance hosted checkout page url
     pub checkout_url: String,
 
-    ///deeplink to open binance app to finish payment
+    /// deeplink to open binance app to finish payment
     pub deeplink: String,
 
-    /// universal url to finish the payment
+    /// Universal url to finish the payment.
+    /// First tries with the mobile app, if not found, tries with the web browser
     pub universal_url: String,
 }

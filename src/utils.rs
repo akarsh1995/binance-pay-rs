@@ -1,3 +1,4 @@
+//! Utilities functions commonly used in the project.
 use rand;
 use rand::Rng;
 use std::time::{SystemTime, UNIX_EPOCH};

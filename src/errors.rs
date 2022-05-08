@@ -1,3 +1,4 @@
+//! Custom error handling for the crate specific errrors.
 use serde::Deserialize;
 use thiserror::Error;
 

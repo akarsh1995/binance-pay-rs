@@ -1,3 +1,6 @@
+//! Use Binance [`client::Client`] in conjunction with the Request Response structs.
+//! - [`create_order::Order`] and [`create_order::CreateOrderResult`]
+
 pub use crate::c2b::*;
 use crate::client;
 use crate::errors::Result;
@@ -16,6 +19,7 @@ impl From<API> for String {
     }
 }
 
+/// Response format from the Binance Pay API.
 #[derive(Deserialize)]
 struct Response {
     status: String,
