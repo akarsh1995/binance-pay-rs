@@ -51,7 +51,7 @@ async fn main() {
 
 - [ ] v0.2.0
     - [ ] Add documentation
-    - [ ] Fetch certificate
+    - [x] Fetch certificate
     - [ ] Webhook notification signature verification
     - [ ] Order webhook notification
     - [ ] Query Order 

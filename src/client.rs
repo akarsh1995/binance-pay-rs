@@ -128,7 +128,7 @@ impl Client {
     ) -> Result<T> {
         let request_str: String = if let Some(serializable) = serializable {
             let res = serde_json::to_string(serializable)?;
-            if res == "{}" {
+            if res == "null" {
                 "".to_string()
             } else {
                 res

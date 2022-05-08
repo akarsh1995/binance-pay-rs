@@ -3,18 +3,23 @@
 
 pub use crate::c2b::*;
 use crate::client;
+use crate::client::Client;
 use crate::errors::Result;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::Value;
 
+use self::webhook::certificate::{Certificate, CertificateResult};
+
 pub enum API {
     CreateOrder,
+    QueryCertificate,
 }
 
 impl From<API> for String {
     fn from(item: API) -> Self {
         String::from(match item {
             API::CreateOrder => "/binancepay/openapi/v2/order",
+            API::QueryCertificate => "/binancepay/openapi/certificates",
         })
     }
 }
@@ -37,7 +42,7 @@ pub trait Binance<D>: Serialize + Sized
 where
     D: DeserializeOwned,
 {
-    async fn post(&self, client: client::Client) -> Result<D> {
+    async fn post(&self, client: &client::Client) -> Result<D> {
         let response = client
             .post_signed_s::<Response, Self>(self.get_api().into(), Some(self))
             .await?;
@@ -51,4 +56,16 @@ impl Binance<create_order::CreateOrderResult> for create_order::Order {
     fn get_api(&self) -> API {
         API::CreateOrder
     }
+}
+
+impl Binance<Vec<CertificateResult>> for Certificate {
+    fn get_api(&self) -> API {
+        API::QueryCertificate
+    }
+}
+
+/// Get certificate out of the received response array.
+pub async fn get_certificate(client: &Client) -> Result<CertificateResult> {
+    let mut certs_arr = Certificate.post(client).await?;
+    Ok(certs_arr.pop().expect("No certificates found"))
 }
