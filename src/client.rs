@@ -95,11 +95,13 @@ impl Client {
         }
     }
 
-    /// Grabs the BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_HOST from the environment variables
+    /// Grabs the BINANCE_PAY_API_KEY, BINANCE_PAY_API_SECRET, BINANCE_HOST from the environment variables
     /// and builds a client
     pub fn from_env() -> Self {
-        let api_key = env::var("BINANCE_API_KEY").unwrap();
-        let secret_key = env::var("BINANCE_API_SECRET").unwrap();
+        let api_key =
+            env::var("BINANCE_PAY_API_KEY").expect("BINANCE_PAY_API_KEY env var not set.");
+        let secret_key =
+            env::var("BINANCE_PAY_API_SECRET").expect("BINANCE_PAY_API_SECRET env var not set.");
         let host =
             env::var("BINANCE_HOST").unwrap_or_else(|_| "https://bpay.binanceapi.com".into());
         Self::new(Some(api_key), Some(secret_key), host)

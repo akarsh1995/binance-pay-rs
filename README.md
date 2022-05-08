@@ -6,8 +6,8 @@ Unofficial Rust Library for the [Binance Pay API](https://developers.binance.com
 # Quickstart
 
 Make sure the following env variables are set:
-  - `BINANCE_API_KEY`
-  - `BINANCE_API_SECRET`
+  - `BINANCE_PAY_API_KEY`
+  - `BINANCE_PAY_API_SECRET`
   
 
 In your `Cargo.toml` file
