@@ -3,17 +3,21 @@
 Unofficial Rust Library for the [Binance Pay API](https://developers.binance.com/docs/binance-pay/introduction)
 
 
+# Quickstart
+
+Make sure the following env variables are set:
+  - `BINANCE_API_KEY`
+  - `BINANCE_API_SECRET`
+  
+
+In your `Cargo.toml` file
 ```toml
 [dependencies]
-binance-pay-rs = "0.1.0"
-tokio = { version = "1.18.0", features = ["macros"] }
+binance-pay-rs = "^0"
+tokio = { version = "1.18.0", features = ["rt-multi-thread", "macros"] }
 ```
 
-## Quickstart
-
-> Make sure the following env variables are set:
->  - `BINANCE_API_KEY`
->  - `BINANCE_API_SECRET`
+## Example 
 
 ```rs
 use tokio;
