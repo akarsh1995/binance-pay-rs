@@ -1,14 +1,14 @@
 //! Use Binance [`client::Client`] in conjunction with the Request Response structs.
 //! - [`create_order::Order`] and [`create_order::CreateOrderResult`]
 
+use self::webhook::certificate::{Certificate, CertificateResult};
+use crate::c2b::webhook::verification::Verifier;
 pub use crate::c2b::*;
 use crate::client;
 use crate::client::Client;
 use crate::errors::Result;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::Value;
-
-use self::webhook::certificate::{Certificate, CertificateResult};
 
 pub enum API {
     CreateOrder,
@@ -68,4 +68,12 @@ impl Binance<Vec<CertificateResult>> for Certificate {
 pub async fn get_certificate(client: &Client) -> Result<CertificateResult> {
     let mut certs_arr = Certificate.post(client).await?;
     Ok(certs_arr.pop().expect("No certificates found"))
+}
+
+/// Get [`Verifier`] directly from the api.
+impl Verifier {
+    pub async fn from_api(client: &Client) -> Result<Self> {
+        let certs = get_certificate(client).await?;
+        Ok(Verifier::from(certs))
+    }
 }
