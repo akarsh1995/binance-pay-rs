@@ -62,7 +62,7 @@ async fn main() {
     - [x] Fetch certificate
     - [x] Webhook notification signature verification
     - [x] Order webhook notification
-    - [ ] Query Order 
+    - [x] Query Order 
     - [ ] Close Order 
     - [ ] Refund Order
     - [ ] Refund Order Notification 
