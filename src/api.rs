@@ -2,6 +2,7 @@
 //! - [`create_order::Order`] and [`create_order::CreateOrderResult`]
 
 use self::{
+    close_order::{CloseOrder, CloseOrderResult},
     query_order::{QueryOrder, QueryOrderResult},
     webhook::certificate::{Certificate, CertificateResult},
 };
@@ -17,6 +18,7 @@ pub enum API {
     CreateOrder,
     QueryCertificate,
     QueryOrder,
+    CloseOrder,
 }
 
 impl From<API> for String {
@@ -25,6 +27,7 @@ impl From<API> for String {
             API::CreateOrder => "/binancepay/openapi/v2/order",
             API::QueryCertificate => "/binancepay/openapi/certificates",
             API::QueryOrder => "/binancepay/openapi/order/query",
+            API::CloseOrder => "/binancepay/openapi/order/close",
         })
     }
 }
@@ -89,6 +92,12 @@ impl Binance<QueryOrderResult> for QueryOrder {
     }
 }
 
+impl Binance<CloseOrderResult> for CloseOrder {
+    fn get_api(&self) -> API {
+        API::CloseOrder
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -135,5 +144,30 @@ mod tests {
             "9825382937292".to_string()
         );
         assert_eq!(q_order_result.merchant_id, 98729382672)
+    }
+
+    #[tokio::test]
+    async fn test_close_order() {
+        let url = &mockito::server_url();
+        let response = r#"
+        {
+            "status": "SUCCESS",
+            "code": "000000",
+            "data": true,
+            "errorMessage": null
+        }
+        "#;
+        let client = Client::new(Some("".into()), Some("".into()), url.to_string());
+        let _m = mock("POST", "/binancepay/openapi/order/close")
+            .with_status(200)
+            .with_header("content-type", "application/json")
+            .with_body(response)
+            .create();
+
+        let close_order = CloseOrder::new(None, Some("9825382937292".into()));
+        let close_order_result = close_order.post(&client).await.unwrap();
+        match close_order_result {
+            CloseOrderResult(r) => assert!(r),
+        }
     }
 }
