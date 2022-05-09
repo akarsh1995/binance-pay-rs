@@ -1,4 +1,6 @@
 //! Contains all webhook related helpers.
+
+pub mod notification;
 pub mod verification;
 
 pub mod certificate {

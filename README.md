@@ -50,10 +50,10 @@ async fn main() {
 # Roadmap
 
 - [ ] v0.2.0
-    - [ ] Add documentation
+    - [x] Add documentation
     - [x] Fetch certificate
     - [x] Webhook notification signature verification
-    - [ ] Order webhook notification
+    - [x] Order webhook notification
     - [ ] Query Order 
     - [ ] Close Order 
     - [ ] Refund Order
