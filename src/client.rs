@@ -1,3 +1,4 @@
+//! Client particularly configured to send requests to the Binance Pay API.
 use crate::api;
 use crate::errors::BinanceContentError;
 use crate::errors::Error;
@@ -15,6 +16,7 @@ use serde_json::from_str;
 use std::env;
 use std::str::FromStr;
 
+/// A client that handles all the requests made to the Binance Pay API.
 pub struct Client {
     api_key: String,
     secret_key: String,
@@ -93,14 +95,20 @@ impl Client {
         }
     }
 
+    /// Grabs the BINANCE_PAY_API_KEY, BINANCE_PAY_API_SECRET, BINANCE_HOST from the environment variables
+    /// and builds a client
     pub fn from_env() -> Self {
-        let api_key = env::var("BINANCE_API_KEY").unwrap();
-        let secret_key = env::var("BINANCE_API_SECRET").unwrap();
+        let api_key =
+            env::var("BINANCE_PAY_API_KEY").expect("BINANCE_PAY_API_KEY env var not set.");
+        let secret_key =
+            env::var("BINANCE_PAY_API_SECRET").expect("BINANCE_PAY_API_SECRET env var not set.");
         let host =
             env::var("BINANCE_HOST").unwrap_or_else(|_| "https://bpay.binanceapi.com".into());
         Self::new(Some(api_key), Some(secret_key), host)
     }
 
+    /// Performs a signed POST request to the specified endpoint,
+    /// with the specified body as string.
     pub async fn post_signed_de<T: DeserializeOwned>(
         &self,
         endpoint: api::API,
@@ -111,6 +119,8 @@ impl Client {
         Ok(t)
     }
 
+    /// Performs a signed POST request to the specified endpoint,
+    /// with the specified body as Serializable struct.
     pub async fn post_signed_s<T: DeserializeOwned, S: serde::Serialize>(
         &self,
         endpoint: api::API,
@@ -118,7 +128,7 @@ impl Client {
     ) -> Result<T> {
         let request_str: String = if let Some(serializable) = serializable {
             let res = serde_json::to_string(serializable)?;
-            if res == "{}" {
+            if res == "null" {
                 "".to_string()
             } else {
                 res
@@ -129,6 +139,8 @@ impl Client {
         self.post_signed_de(endpoint, Some(request_str)).await
     }
 
+    /// Performs a signed POST request to the specified endpoint,
+    /// with the specified body as String.
     pub async fn post_signed(&self, endpoint: api::API, request: Option<String>) -> Result<String> {
         let request_content = RequestContent::from_body(request);
         let payload_signature = request_content.sign(&self.secret_key);
@@ -141,6 +153,8 @@ impl Client {
         self.post(endpoint, payload.to_string(), headers).await
     }
 
+    /// Performs an unsigned POST request to the specified endpoint,
+    /// with the specified body as String.
     pub async fn post(
         &self,
         endpoint: api::API,
@@ -158,6 +172,8 @@ impl Client {
         self.handler(response).await
     }
 
+    /// Process the reponse from the request and returns the body as String
+    /// or returns an error if the status code is not 200
     async fn handler(&self, response: Response) -> Result<String> {
         match response.status() {
             StatusCode::OK => {
@@ -178,6 +194,8 @@ impl Client {
         }
     }
 
+    /// Prepare a header map as per API specification common rules laid by Binance.
+    /// [Required Headers](https://developers.binance.com/docs/binance-pay/api-common#request-header)
     fn build_headers(&self, timestamp: u128, nonce: &str, signature: &str) -> Result<HeaderMap> {
         let header_keys = [
             "BinancePay-Timestamp",

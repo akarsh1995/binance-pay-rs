@@ -1,6 +1,6 @@
 [package]
 name = "binance-pay-rs"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Akarsh Jain <contact@akar.sh>"]
 license = "MIT"
@@ -29,4 +29,7 @@ ring = "0.16.20"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0" }
 thiserror = "1.0"
-tokio = { version = "1.18.0", features = ["time", "macros"] }
+tokio = { version = "1.18.0", features = ["rt-multi-thread", "macros"] }
+base64 = "0.13.0"
+rsa-der = "0.3.0"
+mockito = "0.31.0"

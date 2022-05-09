@@ -1,3 +1,6 @@
+//! Order request and response structure that's laid out in the API documentation.
+//! [Create Order V2 Documentation](https://developers.binance.com/docs/binance-pay/api-order-create-v2)
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -15,6 +18,9 @@ pub enum TerminalType {
     /// The terminal type of the merchant side is a mini program on the mobile phone.
     MiniProgram,
 
+    /// Through Payment link
+    PaymentLink,
+
     /// other undefined type
     Others,
 }
@@ -25,6 +31,7 @@ pub struct Env {
     pub terminal_type: TerminalType,
 }
 
+/// The type of the goods for the order
 #[derive(Serialize, Debug)]
 pub enum GoodsType {
     #[serde(rename = "01")]
@@ -93,17 +100,23 @@ pub enum GoodsCategory {
 pub struct Goods {
     pub goods_type: GoodsType,
 
+    /// Goods category id.
     pub goods_category: GoodsCategory,
 
+    /// The unique ID to identify the goods.
     pub reference_goods_id: String,
 
+    /// Goods name limited to 256 characters.
     pub goods_name: String,
 
+    /// Goods detail limited to 256 characters
     #[serde(skip_serializing_if = "Option::is_none")]
     pub goods_detail: Option<String>,
 }
 
-#[derive(Serialize, Debug)]
+/// Order currency in upper case. only "BUSD","USDT","MBOX" can be accepted,
+/// fiat NOT supported.
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub enum Currency {
     BUSD,
     USDT,
@@ -113,10 +126,14 @@ pub enum Currency {
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Order {
+    /// User's device environment information.
     pub env: Env,
 
+    /// The order id, Unique identifier for the request letter or digit,
+    /// no other symbol allowed, maximum length 32
     pub merchant_trade_no: String,
 
+    /// Amount Range: `0.01` - `20000`
     pub order_amount: f32,
 
     pub currency: Currency,
@@ -153,21 +170,53 @@ pub struct CreateOrderResult {
     /// same as terminalType in request data
     pub terminal_type: TerminalType,
 
-    ///expire time in milli seconds
+    /// expire time in milli seconds
     pub expire_time: u128,
 
-    ///qr code img link
+    /// qr code img link
     pub qrcode_link: String,
 
-    /// qr contend info
+    /// qr content decoded info
     pub qr_content: String,
 
     /// binance hosted checkout page url
     pub checkout_url: String,
 
-    ///deeplink to open binance app to finish payment
+    /// deeplink to open binance app to finish payment
     pub deeplink: String,
 
-    /// universal url to finish the payment
+    /// Universal url to finish the payment.
+    /// First tries with the mobile app, if not found, tries with the web browser
     pub universal_url: String,
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json::Value;
+
+    use super::*;
+
+    #[test]
+    fn test_create_order_request_serialization() {
+        let expected_request = r#"{"env":{"terminalType":"APP"},"merchantTradeNo":"9825382937292","orderAmount":25.00,"currency":"BUSD","goods":{"goodsType":"01","goodsCategory":"D000","referenceGoodsId":"7876763A3B","goodsName":"Ice Cream","goodsDetail":"Greentea ice cream cone"}}"#;
+        let create_order_request = Order {
+            env: Env {
+                terminal_type: TerminalType::App,
+            },
+            merchant_trade_no: "9825382937292".into(),
+            order_amount: 25.00,
+            currency: Currency::BUSD,
+            goods: Goods {
+                goods_type: GoodsType::TangibleGoods,
+                goods_category: GoodsCategory::FoodGroceryHealth,
+                reference_goods_id: "7876763A3B".into(),
+                goods_name: "Ice Cream".into(),
+                goods_detail: Some("Greentea ice cream cone".into()),
+            },
+        };
+        assert_eq!(
+            serde_json::to_value(&create_order_request).unwrap(),
+            serde_json::from_str::<Value>(expected_request).unwrap()
+        );
+    }
 }
