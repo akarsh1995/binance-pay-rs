@@ -1,22 +1,26 @@
-//! Webhook notification payload parsing helpers.
-//!
-//! ```
-//! let body = r#"{
-//!     "bizType": "PAY",
-//!     "data": "{\"merchantTradeNo\":\"9825382937292\",\"totalFee\":0.88000000,\"transactTime\":1619508939664,\"currency\":\"USDT\",\"openUserId\":\"1211HS10K81f4273ac031\",\"productType\":\"Food\",\"productName\":\"Ice Cream\",\"tradeType\":\"WEB\",\"transactionId\":\"M_R_282737362839373\"}",
-//!     "bizId": 29383937493038367292,
-//!     "bizStatus": "PAY_SUCCESS"
-//! }"#;
-//!
-//! let notification = Notification::try_from(body).unwrap();
-//! match notification {
-//!     Notification::Order(order) => {
-//!         assert_eq!(order.merchant_trade_no, "9825382937292");
-//!         assert_eq!(order.total_fee, 0.88);
-//!         assert_eq!(order.currency, Currency::USDT);
-//!     }
-//! }
-//! ```
+/*!
+Webhook notification payload parsing helpers.
+```
+# use bpay::c2b::webhook::notification::{Notification, order::Currency};
+# fn main() {
+let body = r#"{
+    "bizType": "PAY",
+    "data": "{\"merchantTradeNo\":\"9825382937292\",\"totalFee\":0.88000000,\"transactTime\":1619508939664,\"currency\":\"USDT\",\"openUserId\":\"1211HS10K81f4273ac031\",\"productType\":\"Food\",\"productName\":\"Ice Cream\",\"tradeType\":\"WEB\",\"transactionId\":\"M_R_282737362839373\"}",
+    "bizId": 29383937493038367292,
+    "bizStatus": "PAY_SUCCESS"
+}"#;
+
+let notification = Notification::try_from(body).unwrap();
+match notification {
+    Notification::Order(order) => {
+        assert_eq!(order.merchant_trade_no, "9825382937292");
+        assert_eq!(order.total_fee, 0.88);
+        assert_eq!(order.currency, Currency::USDT);
+    }
+}
+# }
+```
+*/
 
 pub mod order;
 
@@ -83,7 +87,7 @@ impl TryFrom<&str> for Notification {
 
 #[cfg(test)]
 mod tests {
-    use crate::c2b::webhook::notification::order::Currency;
+    use order::Currency;
 
     use super::*;
 
