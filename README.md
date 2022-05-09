@@ -66,7 +66,7 @@ async fn main() {
     - [x] Close Order 
     - [x] Refund Order
     - [x] Refund Order Notification 
-    - [ ] Wallet balance query 
+    - [x] Wallet balance query 
 
 - [ ] v0.3.0
     - [ ] Transfer Funds 
