@@ -2,6 +2,7 @@
 Webhook notification payload parsing helpers.
 ```
 # use bpay::c2b::webhook::notification::{Notification, order::Currency};
+# use bpay::c2b::webhook::notification::BizStatus;
 # fn main() {
 let body = r#"{
     "bizType": "PAY",
@@ -12,10 +13,16 @@ let body = r#"{
 
 let notification = Notification::try_from(body).unwrap();
 match notification {
-    Notification::Order(order) => {
-        assert_eq!(order.merchant_trade_no, "9825382937292");
-        assert_eq!(order.total_fee, 0.88);
-        assert_eq!(order.currency, Currency::USDT);
+    Notification::Order {
+        biz_id,
+        biz_status,
+        order_detail,
+    } => {
+        assert_eq!(biz_id, 29383937493038367292);
+        assert_eq!(biz_status, BizStatus::PaySuccess);
+        # assert_eq!(order_detail.merchant_trade_no, "9825382937292");
+        # assert_eq!(order_detail.total_fee, 0.88);
+        # assert_eq!(order_detail.currency, Currency::USDT);
     }
     _ => panic!("Unexpected notification type"),
 }
@@ -37,7 +44,7 @@ pub enum BizType {
     PayRefund,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq, Eq)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum BizStatus {
     PaySuccess,
@@ -69,8 +76,16 @@ impl TryFrom<&str> for NotificationRequestParams {
 
 #[derive(Deserialize, Debug)]
 pub enum Notification {
-    Order(order::OrderNotification),
-    Refund(refund::Refund),
+    Order {
+        biz_id: u128,
+        biz_status: BizStatus,
+        order_detail: order::OrderNotification,
+    },
+    Refund {
+        biz_id: u128,
+        biz_status: BizStatus,
+        refund_detail: refund::Refund,
+    },
 }
 
 impl TryFrom<NotificationRequestParams> for Notification {
@@ -78,8 +93,16 @@ impl TryFrom<NotificationRequestParams> for Notification {
 
     fn try_from(params: NotificationRequestParams) -> crate::errors::Result<Self> {
         match params.biz_type {
-            BizType::Pay => Ok(Self::Order(serde_json::from_str(&params.data)?)),
-            BizType::PayRefund => Ok(Self::Refund(serde_json::from_str(&params.data)?)),
+            BizType::Pay => Ok(Notification::Order {
+                biz_id: params.biz_id,
+                biz_status: params.biz_status,
+                order_detail: serde_json::from_str::<order::OrderNotification>(&params.data)?,
+            }),
+            BizType::PayRefund => Ok(Notification::Refund {
+                biz_id: params.biz_id,
+                biz_status: params.biz_status,
+                refund_detail: serde_json::from_str::<refund::Refund>(&params.data)?,
+            }),
         }
     }
 }
@@ -108,10 +131,16 @@ mod tests {
           }"#;
         let notification = Notification::try_from(body).unwrap();
         match notification {
-            Notification::Order(order) => {
-                assert_eq!(order.merchant_trade_no, "9825382937292");
-                assert_eq!(order.total_fee, 0.88);
-                assert_eq!(order.currency, Currency::USDT);
+            Notification::Order {
+                biz_id,
+                biz_status,
+                order_detail: details,
+            } => {
+                assert_eq!(biz_id, 29383937493038367292);
+                assert_eq!(biz_status, BizStatus::PaySuccess);
+                assert_eq!(details.merchant_trade_no, "9825382937292");
+                assert_eq!(details.total_fee, 0.88);
+                assert_eq!(details.currency, Currency::USDT);
             }
             _ => panic!("Unexpected notification type"),
         }
@@ -129,9 +158,15 @@ mod tests {
         "#;
         let notification = Notification::try_from(body).unwrap();
         match notification {
-            Notification::Refund(refund) => {
-                assert_eq!(refund.merchant_trade_no, "6177e6ae81ce6f001b4a6233");
-                assert_eq!(refund.refund_info.order_amount, "0.01000000");
+            Notification::Refund {
+                biz_id,
+                biz_status,
+                refund_detail: details,
+            } => {
+                assert_eq!(biz_id, 123289163323899904);
+                assert_eq!(biz_status, BizStatus::RefundSuccess);
+                assert_eq!(details.merchant_trade_no, "6177e6ae81ce6f001b4a6233");
+                assert_eq!(details.refund_info.order_amount, "0.01000000");
             }
             _ => panic!("Unexpected notification type"),
         }
