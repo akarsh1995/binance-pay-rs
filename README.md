@@ -57,7 +57,7 @@ async fn main() {
 ```
 # Roadmap
 
-- [ ] v0.2.0
+- [x] v0.2.0
     - [x] Add documentation
     - [x] Fetch certificate
     - [x] Webhook notification signature verification
