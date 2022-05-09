@@ -8,9 +8,11 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct QueryOrder {
     // maximum length 32,letter or digit, no other symbol allowed, can not be empty if prepayId is empty
+    #[serde(skip_serializing_if = "Option::is_none")]
     prepay_id: Option<String>,
 
     // maximum length 19,letter or digit, no other symbol allowed, can not be empty if merchantTradeNo is empty
+    #[serde(skip_serializing_if = "Option::is_none")]
     merchant_trade_no: Option<String>,
 }
 
@@ -77,5 +79,21 @@ impl QueryOrder {
             prepay_id,
             merchant_trade_no,
         }
+    }
+}
+#[cfg(test)]
+mod tests {
+    use serde_json::Value;
+
+    use super::*;
+
+    #[test]
+    fn test_query_order_request_serialization() {
+        let expected_request = r#"{"merchantTradeNo":"9825382937292"}"#;
+        let qo = QueryOrder::new(None, Some("9825382937292".into()));
+        assert_eq!(
+            serde_json::to_value(&qo).unwrap(),
+            serde_json::from_str::<Value>(expected_request).unwrap()
+        );
     }
 }

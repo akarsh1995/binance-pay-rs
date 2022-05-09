@@ -28,3 +28,23 @@ impl CloseOrder {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use serde_json::Value;
+
+    use super::*;
+
+    #[test]
+    fn test_order_close_request_serialization() {
+        let expected_request = r#"{"merchantTradeNo":"9825382937292","prepayId":null}"#;
+        let close_request = CloseOrder {
+            prepay_id: None,
+            merchant_trade_no: Some("9825382937292".into()),
+        };
+        assert_eq!(
+            serde_json::to_value(&close_request).unwrap(),
+            serde_json::from_str::<Value>(expected_request).unwrap()
+        );
+    }
+}

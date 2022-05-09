@@ -189,3 +189,34 @@ pub struct CreateOrderResult {
     /// First tries with the mobile app, if not found, tries with the web browser
     pub universal_url: String,
 }
+
+#[cfg(test)]
+mod tests {
+    use serde_json::Value;
+
+    use super::*;
+
+    #[test]
+    fn test_create_order_request_serialization() {
+        let expected_request = r#"{"env":{"terminalType":"APP"},"merchantTradeNo":"9825382937292","orderAmount":25.00,"currency":"BUSD","goods":{"goodsType":"01","goodsCategory":"D000","referenceGoodsId":"7876763A3B","goodsName":"Ice Cream","goodsDetail":"Greentea ice cream cone"}}"#;
+        let create_order_request = Order {
+            env: Env {
+                terminal_type: TerminalType::App,
+            },
+            merchant_trade_no: "9825382937292".into(),
+            order_amount: 25.00,
+            currency: Currency::BUSD,
+            goods: Goods {
+                goods_type: GoodsType::TangibleGoods,
+                goods_category: GoodsCategory::FoodGroceryHealth,
+                reference_goods_id: "7876763A3B".into(),
+                goods_name: "Ice Cream".into(),
+                goods_detail: Some("Greentea ice cream cone".into()),
+            },
+        };
+        assert_eq!(
+            serde_json::to_value(&create_order_request).unwrap(),
+            serde_json::from_str::<Value>(expected_request).unwrap()
+        );
+    }
+}

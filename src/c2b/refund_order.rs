@@ -15,6 +15,7 @@ pub struct RefundOrder {
     pub refund_amount: f64,
 
     /// Reason of the refund.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_reason: Option<String>,
 }
 
@@ -53,4 +54,26 @@ pub struct RefundResult {
 
     ///  The flag to mark this request refundRequestId is duplicate or not. It will be 'Y' or 'N'
     pub duplicate_request: RefundDuplicateStatus,
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json::Value;
+
+    use super::*;
+
+    #[test]
+    fn test_refund_order_request_serialization() {
+        let expected_request = r#"{"refundRequestId":"68711039982968832","prepayId":"383729303729303","refundAmount":25.00,"refundReason":""}"#;
+        let refund_order = RefundOrder {
+            refund_request_id: "68711039982968832".into(),
+            prepay_id: "383729303729303".into(),
+            refund_amount: 25.00,
+            refund_reason: Some("".into()),
+        };
+        assert_eq!(
+            serde_json::to_value(&refund_order).unwrap(),
+            serde_json::from_str::<Value>(expected_request).unwrap()
+        );
+    }
 }
