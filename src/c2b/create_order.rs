@@ -18,6 +18,9 @@ pub enum TerminalType {
     /// The terminal type of the merchant side is a mini program on the mobile phone.
     MiniProgram,
 
+    /// Through Payment link
+    PaymentLink,
+
     /// other undefined type
     Others,
 }
@@ -113,7 +116,7 @@ pub struct Goods {
 
 /// Order currency in upper case. only "BUSD","USDT","MBOX" can be accepted,
 /// fiat NOT supported.
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub enum Currency {
     BUSD,
     USDT,
