@@ -2,6 +2,7 @@
 //! - [`create_order::Order`] and [`create_order::CreateOrderResult`]
 
 use self::{
+    balance_query::{WalletBalance, WalletBalanceResult},
     close_order::{CloseOrder, CloseOrderResult},
     query_order::{QueryOrder, QueryOrderResult},
     refund_order::{RefundDuplicateStatus, RefundOrder, RefundResult},
@@ -21,6 +22,7 @@ pub enum API {
     QueryOrder,
     CloseOrder,
     RefundOrder,
+    BalanceQuery,
 }
 
 impl From<API> for String {
@@ -31,6 +33,7 @@ impl From<API> for String {
             API::QueryOrder => "/binancepay/openapi/order/query",
             API::CloseOrder => "/binancepay/openapi/order/close",
             API::RefundOrder => "/binancepay/openapi/order/refund",
+            API::BalanceQuery => "/binancepay/openapi/balance",
         })
     }
 }
@@ -104,6 +107,12 @@ impl Binance<CloseOrderResult> for CloseOrder {
 impl Binance<RefundResult> for RefundOrder {
     fn get_api(&self) -> API {
         API::RefundOrder
+    }
+}
+
+impl Binance<WalletBalanceResult> for WalletBalance {
+    fn get_api(&self) -> API {
+        API::BalanceQuery
     }
 }
 
@@ -223,5 +232,36 @@ mod tests {
             RefundDuplicateStatus::No => assert!(true),
             _ => assert!(false),
         }
+    }
+
+    #[tokio::test]
+    async fn test_wallet_balance_query() {
+        let url = &mockito::server_url();
+        let response = r#"
+        {
+            "status": "SUCCESS",
+            "code": "000000",
+            "data": {
+              "balance": 990000.00000000,
+              "asset": "BUSD",
+              "fiat": "USD",
+              "availableFiatValuation": 989991.90516600,
+              "availableBtcValuation": 22.98780000
+            }
+        }
+        "#;
+        let client = Client::new(Some("".into()), Some("".into()), url.to_string());
+        let _m = mock("POST", "/binancepay/openapi/balance")
+            .with_status(200)
+            .with_header("content-type", "application/json")
+            .with_body(response)
+            .create();
+
+        let wallet_bal = WalletBalance {
+            wallet: balance_query::WalletType::SpotWallet,
+            currency: "BUSD".into(),
+        };
+        let wallet_bal = wallet_bal.post(&client).await.unwrap();
+        assert_eq!(wallet_bal.available_fiat_valuation, 989991.90516600);
     }
 }
