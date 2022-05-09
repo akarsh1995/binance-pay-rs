@@ -25,6 +25,15 @@ pub enum Error {
     #[error(transparent)]
     UTF8Err(#[from] std::str::Utf8Error),
 
+    #[error(transparent)]
+    StringConvertError(#[from] reqwest::header::ToStrError),
+
+    #[error(transparent)]
+    Base64DecodeError(#[from] base64::DecodeError),
+
+    #[error(transparent)]
+    RSADerError(#[from] rsa_der::Error),
+
     #[error("{response}")]
     BinanceError {
         #[from]
