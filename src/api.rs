@@ -4,6 +4,7 @@
 use self::{
     close_order::{CloseOrder, CloseOrderResult},
     query_order::{QueryOrder, QueryOrderResult},
+    refund_order::{RefundDuplicateStatus, RefundOrder, RefundResult},
     webhook::certificate::{Certificate, CertificateResult},
 };
 use crate::c2b::webhook::verification::Verifier;
@@ -19,6 +20,7 @@ pub enum API {
     QueryCertificate,
     QueryOrder,
     CloseOrder,
+    RefundOrder,
 }
 
 impl From<API> for String {
@@ -28,6 +30,7 @@ impl From<API> for String {
             API::QueryCertificate => "/binancepay/openapi/certificates",
             API::QueryOrder => "/binancepay/openapi/order/query",
             API::CloseOrder => "/binancepay/openapi/order/close",
+            API::RefundOrder => "/binancepay/openapi/order/refund",
         })
     }
 }
@@ -98,8 +101,15 @@ impl Binance<CloseOrderResult> for CloseOrder {
     }
 }
 
+impl Binance<RefundResult> for RefundOrder {
+    fn get_api(&self) -> API {
+        API::RefundOrder
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    use super::refund_order::RefundOrder;
     use super::*;
     use crate::client::Client;
     use mockito;
@@ -168,6 +178,50 @@ mod tests {
         let close_order_result = close_order.post(&client).await.unwrap();
         match close_order_result {
             CloseOrderResult(r) => assert!(r),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_refund_order_deserialization() {
+        let url = &mockito::server_url();
+        let response = r#"
+        {
+            "status": "SUCCESS",
+            "code": "000000",
+            "data": {
+              "refundRequestId": "68711039982968832",
+              "prepayId": "383729303729303",
+              "orderAmount": "100.11",
+              "refundedAmount": "10.88",
+              "refundAmount": "5.00",
+              "remainingAttempts":8,
+              "payerOpenId":"dde730c2e0ea1f1780cf26343b98fd3b",
+              "duplicateRequest":"N"
+            },
+            "errorMessage": ""
+        }
+        "#;
+        let client = Client::new(Some("".into()), Some("".into()), url.to_string());
+        let _m = mock("POST", "/binancepay/openapi/order/refund")
+            .with_status(200)
+            .with_header("content-type", "application/json")
+            .with_body(response)
+            .create();
+
+        let refund_order = RefundOrder {
+            refund_request_id: "68711039982968832".into(),
+            prepay_id: "383729303729303".into(),
+            refund_amount: 25.17,
+            refund_reason: Some("Upon Request".into()),
+        };
+        let refund_result = refund_order.post(&client).await.unwrap();
+        assert_eq!(
+            refund_result.refund_request_id,
+            "68711039982968832".to_string()
+        );
+        match refund_result.duplicate_request {
+            RefundDuplicateStatus::No => assert!(true),
+            _ => assert!(false),
         }
     }
 }

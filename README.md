@@ -64,7 +64,7 @@ async fn main() {
     - [x] Order webhook notification
     - [x] Query Order 
     - [x] Close Order 
-    - [ ] Refund Order
+    - [x] Refund Order
     - [ ] Refund Order Notification 
     - [ ] Wallet balance query 
 
