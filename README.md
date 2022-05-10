@@ -57,16 +57,16 @@ async fn main() {
 ```
 # Roadmap
 
-- [x] v0.2.0
-    - [x] Add documentation
-    - [x] Fetch certificate
-    - [x] Webhook notification signature verification
-    - [x] Order webhook notification
-    - [x] Query Order 
-    - [x] Close Order 
-    - [x] Refund Order
-    - [x] Refund Order Notification 
-    - [x] Wallet balance query 
+- [ ] v0.2.1
+    - [x] CI
+    - [ ] Add examples
+        - [ ] create and close order
+        - [ ] axum example notification
+
+- [ ] v0.2.2
+    - [ ] more doc codeblocks
+        - [ ] Verification codeblock `src/c2b/webhook/verification` 
+        - [ ] Notification codeblock `src/c2b/webhook/notification` 
 
 - [ ] v0.3.0
     - [ ] Transfer Funds 
