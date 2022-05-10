@@ -63,18 +63,13 @@ cargo run --example notification_axum_server
 
 # Roadmap
 
-- [x] v0.2.1
-    - [x] CI
-    - [x] Add examples
-        - [x] create and close order
-        - [x] axum example notification
-
 - [ ] v0.2.2
     - [ ] more doc codeblocks
         - [ ] Verification codeblock `src/c2b/webhook/verification` 
         - [ ] Notification codeblock `src/c2b/webhook/notification` 
 
 - [ ] v0.3.0
+    - [ ] Close Order enum variants Success or Fail instead of bool
     - [ ] Transfer Funds 
     - [ ] Query Transfer Result
     - [ ] Create Sub Merchant
