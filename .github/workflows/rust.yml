@@ -8,10 +8,12 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  BINANCE_PAY_API_KEY: "sample-api-key"
+  BINANCE_PAY_API_SECRET: "dummy-api-secret"
 
 jobs:
 
-  build:
+  tests:
 
     runs-on: ubuntu-latest
 
