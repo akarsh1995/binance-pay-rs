@@ -55,13 +55,19 @@ async fn main() {
    }
 }
 ```
+
+### To run an example: 
+```sh
+cargo run --example notification_axum_server
+```
+
 # Roadmap
 
-- [ ] v0.2.1
+- [x] v0.2.1
     - [x] CI
-    - [ ] Add examples
-        - [ ] create and close order
-        - [ ] axum example notification
+    - [x] Add examples
+        - [x] create and close order
+        - [x] axum example notification
 
 - [ ] v0.2.2
     - [ ] more doc codeblocks
