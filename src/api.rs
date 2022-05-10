@@ -4,6 +4,7 @@
 use self::{
     balance_query::{WalletBalance, WalletBalanceResult},
     close_order::{CloseOrder, CloseOrderResult},
+    create_order::{CreateOrderResult, Order},
     query_order::{QueryOrder, QueryOrderResult},
     refund_order::{RefundDuplicateStatus, RefundOrder, RefundResult},
     webhook::certificate::{Certificate, CertificateResult},
@@ -66,17 +67,27 @@ where
     fn get_api(&self) -> API;
 }
 
-impl Binance<create_order::CreateOrderResult> for create_order::Order {
-    fn get_api(&self) -> API {
-        API::CreateOrder
-    }
+#[macro_export]
+macro_rules! impl_binance {
+    ($(($x: ty, $y: ty, $z: ident)),+) => {
+            $(
+                impl Binance<$x> for $y {
+                    fn get_api(&self) -> API {
+                        API::$z
+                    }
+                }
+            )+
+    };
 }
 
-impl Binance<Vec<CertificateResult>> for Certificate {
-    fn get_api(&self) -> API {
-        API::QueryCertificate
-    }
-}
+impl_binance!(
+    (CreateOrderResult, Order, CreateOrder),
+    (Vec<CertificateResult>, Certificate, QueryCertificate),
+    (QueryOrderResult, QueryOrder, QueryOrder),
+    (CloseOrderResult, CloseOrder, CloseOrder),
+    (RefundResult, RefundOrder, RefundOrder),
+    (WalletBalanceResult, WalletBalance, BalanceQuery)
+);
 
 /// Get certificate out of the received response array.
 pub async fn get_certificate(client: &Client) -> Result<CertificateResult> {
@@ -89,30 +100,6 @@ impl Verifier {
     pub async fn from_api(client: &Client) -> Result<Self> {
         let certs = get_certificate(client).await?;
         Ok(Verifier::from(certs))
-    }
-}
-
-impl Binance<QueryOrderResult> for QueryOrder {
-    fn get_api(&self) -> API {
-        API::QueryOrder
-    }
-}
-
-impl Binance<CloseOrderResult> for CloseOrder {
-    fn get_api(&self) -> API {
-        API::CloseOrder
-    }
-}
-
-impl Binance<RefundResult> for RefundOrder {
-    fn get_api(&self) -> API {
-        API::RefundOrder
-    }
-}
-
-impl Binance<WalletBalanceResult> for WalletBalance {
-    fn get_api(&self) -> API {
-        API::BalanceQuery
     }
 }
 
