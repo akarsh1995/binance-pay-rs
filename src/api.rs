@@ -181,7 +181,8 @@ mod tests {
         let close_order = CloseOrder::new(None, Some("9825382937292".into()));
         let close_order_result = close_order.post(&client).await.unwrap();
         match close_order_result {
-            CloseOrderResult(r) => assert!(r),
+            CloseOrderResult::Success => assert!(true),
+            _ => assert!(false),
         }
     }
 

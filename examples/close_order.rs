@@ -43,8 +43,8 @@ async fn main() -> bpay::errors::Result<()> {
 
     let close_order_result = close_order_request.post(&client).await?;
     match close_order_result {
-        CloseOrderResult(true) => println!("Order closed successfully"),
-        CloseOrderResult(false) => println!("Order could not be closed"),
+        CloseOrderResult::Success => println!("Order closed successfully"),
+        CloseOrderResult::Failure => println!("Order could not be closed"),
     }
     Ok(())
 }

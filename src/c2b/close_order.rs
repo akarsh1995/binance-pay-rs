@@ -3,7 +3,12 @@
 //! The successful close result will be notified asynchronously
 //! through Order Notification Webhook with bizStatus = "PAY_CLOSED"
 
-use serde::{Deserialize, Serialize};
+use std::fmt;
+
+use serde::{
+    de::{self, Visitor},
+    Deserialize, Serialize,
+};
 
 /// Either of the prepay id or the merchant trade no must be present.
 #[derive(Serialize, Debug)]
@@ -16,8 +21,40 @@ pub struct CloseOrder {
     merchant_trade_no: Option<String>,
 }
 
-#[derive(Deserialize, Debug)]
-pub struct CloseOrderResult(pub bool);
+#[derive(Debug, PartialEq, Eq)]
+pub enum CloseOrderResult {
+    Success,
+    Failure,
+}
+
+impl<'de> Deserialize<'de> for CloseOrderResult {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        deserializer.deserialize_bool(ClosedStatusVisitor)
+    }
+}
+
+struct ClosedStatusVisitor;
+
+impl<'de> Visitor<'de> for ClosedStatusVisitor {
+    type Value = CloseOrderResult;
+
+    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_str("a boolean value")
+    }
+
+    fn visit_bool<E>(self, value: bool) -> Result<CloseOrderResult, E>
+    where
+        E: de::Error,
+    {
+        match value {
+            true => Ok(CloseOrderResult::Success),
+            false => Ok(CloseOrderResult::Failure),
+        }
+    }
+}
 
 impl CloseOrder {
     pub fn new(prepay_id: Option<String>, merchant_trade_no: Option<String>) -> Self {
@@ -45,6 +82,20 @@ mod tests {
         assert_eq!(
             serde_json::to_value(&close_request).unwrap(),
             serde_json::from_str::<Value>(expected_request).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_deserialize_close_order_result() {
+        let result_json_true = r#"true"#;
+        let result_json_false = r#"false"#;
+        assert_eq!(
+            serde_json::from_str::<CloseOrderResult>(result_json_true).unwrap(),
+            CloseOrderResult::Success
+        );
+        assert_eq!(
+            serde_json::from_str::<CloseOrderResult>(result_json_false).unwrap(),
+            CloseOrderResult::Failure
         );
     }
 }
