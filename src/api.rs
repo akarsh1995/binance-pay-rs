@@ -6,6 +6,7 @@ use self::{
     close_order::{CloseOrder, CloseOrderResult},
     create_order::{CreateOrderResult, Order},
     query_order::{QueryOrder, QueryOrderResult},
+    query_refund::{QueryRefundRequest, QueryRefundResult},
     query_transfer::{QueryTransferRequest, QueryTransferResult},
     refund_order::{RefundOrder, RefundResult},
     transfer_fund::{TransferFund, TransferFundResult},
@@ -27,6 +28,7 @@ pub enum API {
     BalanceQuery,
     TransferFund,
     QueryTransfer,
+    QueryRefund,
 }
 
 impl From<API> for String {
@@ -40,6 +42,7 @@ impl From<API> for String {
             API::BalanceQuery => "/binancepay/openapi/balance",
             API::TransferFund => "/binancepay/openapi/wallet/transfer",
             API::QueryTransfer => "/binancepay/openapi/wallet/transfer/query",
+            API::QueryRefund => "/binancepay/openapi/order/refund/query",
         })
     }
 }
@@ -86,7 +89,8 @@ impl_binance!(
     (RefundResult, RefundOrder, RefundOrder),
     (WalletBalanceResult, WalletBalance, BalanceQuery),
     (TransferFundResult, TransferFund, TransferFund),
-    (QueryTransferResult, QueryTransferRequest, QueryTransfer)
+    (QueryTransferResult, QueryTransferRequest, QueryTransfer),
+    (QueryRefundResult, QueryRefundRequest, QueryRefund)
 );
 
 /// Get certificate out of the received response array.

@@ -70,7 +70,7 @@ cargo run --example notification_axum_server
     - [x] Transfer Funds 
     - [x] Query Transfer Result
     - [ ] Create Sub Merchant
-    - [ ] Query Refund Order
+    - [x] Query Refund Order
     - [ ] Batch Payout
     - [ ] Payout Notification
     - [ ] Payout Query 

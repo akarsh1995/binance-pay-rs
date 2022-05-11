@@ -8,6 +8,7 @@ pub mod query_transfer;
 pub mod refund_order;
 pub mod transfer_fund;
 pub mod webhook;
+pub mod query_refund;
 
 #[cfg(test)]
 mod tests {
