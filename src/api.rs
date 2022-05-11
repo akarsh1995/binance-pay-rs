@@ -96,6 +96,21 @@ pub async fn get_certificate(client: &Client) -> Result<CertificateResult> {
 }
 
 /// Get [`Verifier`] directly from the api.
+/// ```rust,no_run
+/// # use bpay::api::webhook::verification::{Verifier, Verify};
+/// # use reqwest::header::HeaderMap;
+/// # use bpay::errors::Result;
+/// # use bpay::client::Client;
+/// # #[tokio::main]
+/// # async fn main() -> Result<()>{
+/// # let headers = HeaderMap::new();
+/// # let body = "";
+/// # let client = Client::from_env();
+/// let verifier = Verifier::from_api(&client).await?;
+/// verifier.verify(&headers, &body).unwrap();
+/// # Ok(())
+/// # }
+/// ```
 impl Verifier {
     pub async fn from_api(client: &Client) -> Result<Self> {
         let certs = get_certificate(client).await?;
