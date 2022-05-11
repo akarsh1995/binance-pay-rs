@@ -25,7 +25,8 @@ pub struct TransferFund {
     transfer_type: TransferType,
 }
 
-#[derive(Serialize, Debug, Deserialize)]
+#[derive(Debug, Deserialize)]
+#[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Status {
     Success,
@@ -33,7 +34,8 @@ pub enum Status {
     Process,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
+#[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "camelCase")]
 pub struct TransferFundResult {
     /// the value of Request property requestId
@@ -48,48 +50,30 @@ pub struct TransferFundResult {
     pub transfer_type: TransferType,
 }
 
-macro_rules! test_request_serialize_deserialize {
-    ($(($test_name: ident, $expected: literal, $p: expr),)*) => {
-            #[cfg(test)]
-            mod tests {
-                use super::*;
-                use serde_json::Value;
-                $(
-                    #[test]
-                    fn $test_name() {
-                        let expected_request_string = $expected;
-                        let x = $p;
-                        assert_eq!(
-                            serde_json::to_value(&x).unwrap(),
-                            serde_json::from_str::<Value>(expected_request_string).unwrap()
-                        );
-                    }
-                )*
+#[cfg(test)]
+mod tests {
+    use crate::c2b::tests::test_request_serialize_deserialize;
+    test_request_serialize_deserialize!(
+        (
+            test_transfer_fund_serialize,
+            r#"{"requestId":"100002021071407140001","currency":"BNB","amount":"0.01","transferType":"TO_MAIN"}"#,
+            TransferFund {
+                request_id: "100002021071407140001".to_string(),
+                currency: "BNB".to_string(),
+                amount: "0.01".to_string(),
+                transfer_type: TransferType::ToMain,
             }
-
-    };
+        ),
+        (
+            test_transfer_fund_result_deserialize_to_pay,
+            r#"{"tranId":"100002021071407140001","status":"SUCCESS","currency":"BNB","amount":"0.01","transferType":"TO_MAIN"}"#,
+            TransferFundResult {
+                tran_id: "100002021071407140001".to_string(),
+                status: Status::Success,
+                currency: "BNB".to_string(),
+                amount: "0.01".to_string(),
+                transfer_type: TransferType::ToMain,
+            }
+        )
+    );
 }
-
-test_request_serialize_deserialize!(
-    (
-        test_transfer_fund_serialize,
-        r#"{"requestId":"100002021071407140001","currency":"BNB","amount":"0.01","transferType":"TO_MAIN"}"#,
-        TransferFund {
-            request_id: "100002021071407140001".to_string(),
-            currency: "BNB".to_string(),
-            amount: "0.01".to_string(),
-            transfer_type: TransferType::ToMain,
-        }
-    ),
-    (
-        test_transfer_fund_result_deserialize_to_pay,
-        r#"{"tranId":"100002021071407140001","status":"SUCCESS","currency":"BNB","amount":"0.01","transferType":"TO_MAIN"}"#,
-        TransferFundResult {
-            tran_id: "100002021071407140001".to_string(),
-            status: Status::Success,
-            currency: "BNB".to_string(),
-            amount: "0.01".to_string(),
-            transfer_type: TransferType::ToMain,
-        }
-    ),
-);

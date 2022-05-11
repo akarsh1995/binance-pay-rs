@@ -22,6 +22,7 @@ pub struct CloseOrder {
 }
 
 #[derive(Debug, PartialEq, Eq)]
+#[cfg_attr(test, derive(Serialize))]
 pub enum CloseOrderResult {
     Success,
     Failure,
@@ -66,24 +67,19 @@ impl CloseOrder {
     }
 }
 
+// #[cfg(test)]
+// mod tests {
 #[cfg(test)]
 mod tests {
-    use serde_json::Value;
-
-    use super::*;
-
-    #[test]
-    fn test_order_close_request_serialization() {
-        let expected_request = r#"{"merchantTradeNo":"9825382937292","prepayId":null}"#;
-        let close_request = CloseOrder {
+    use crate::c2b::tests::test_request_serialize_deserialize;
+    test_request_serialize_deserialize!((
+        test_serialize_close_order,
+        r#"{"merchantTradeNo":"9825382937292","prepayId":null}"#,
+        CloseOrder {
             prepay_id: None,
             merchant_trade_no: Some("9825382937292".into()),
-        };
-        assert_eq!(
-            serde_json::to_value(&close_request).unwrap(),
-            serde_json::from_str::<Value>(expected_request).unwrap()
-        );
-    }
+        }
+    ));
 
     #[test]
     fn test_deserialize_close_order_result() {

@@ -20,6 +20,7 @@ pub struct WalletBalance {
 }
 
 #[derive(Deserialize, Debug)]
+#[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "camelCase")]
 pub struct WalletBalanceResult {
     /// Current balance free to use
@@ -40,15 +41,36 @@ pub struct WalletBalanceResult {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
 
-    #[test]
-    fn test_wallet_bal_request_serialization() {
-        let expected_request = r#"{"wallet":"SPOT_WALLET","currency":"BUSD"}"#;
-        let wb_req = WalletBalance {
-            wallet: WalletType::SpotWallet,
-            currency: "BUSD".into(),
-        };
-        assert_eq!(serde_json::to_string(&wb_req).unwrap(), expected_request);
-    }
+    use crate::c2b::tests::test_request_serialize_deserialize;
+
+    test_request_serialize_deserialize!(
+        (
+            test_wallet_balance_serialize,
+            r#"{"wallet":"SPOT_WALLET","currency":"BUSD"}"#,
+            WalletBalance {
+                wallet: WalletType::SpotWallet,
+                currency: "BUSD".to_string(),
+            }
+        ),
+        (
+            test_wallet_balance_deserialize,
+            r#"
+            {
+                "balance": 990000.00000000,
+                "asset": "BUSD",
+                "fiat": "USD",
+                "availableFiatValuation": 989991.90516600,
+                "availableBtcValuation": 22.98780000
+            }
+            "#,
+            WalletBalanceResult {
+                balance: 990000.0,
+                asset: "BUSD".to_string(),
+                fiat: "USD".to_string(),
+                available_fiat_valuation: 989991.90516600,
+                available_btc_valuation: 22.9878,
+            }
+        )
+    );
 }

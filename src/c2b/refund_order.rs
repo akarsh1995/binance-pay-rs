@@ -20,6 +20,7 @@ pub struct RefundOrder {
 }
 
 #[derive(Deserialize, Debug)]
+#[cfg_attr(test, derive(Serialize))]
 pub enum RefundDuplicateStatus {
     #[serde(rename = "Y")]
     Yes,
@@ -29,6 +30,7 @@ pub enum RefundDuplicateStatus {
 }
 
 #[derive(Deserialize, Debug)]
+#[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "camelCase")]
 pub struct RefundResult {
     ///  The unique ID assigned by the merchant to identify a refund request.
@@ -58,22 +60,31 @@ pub struct RefundResult {
 
 #[cfg(test)]
 mod tests {
-    use serde_json::Value;
-
-    use super::*;
-
-    #[test]
-    fn test_refund_order_request_serialization() {
-        let expected_request = r#"{"refundRequestId":"68711039982968832","prepayId":"383729303729303","refundAmount":25.00,"refundReason":""}"#;
-        let refund_order = RefundOrder {
-            refund_request_id: "68711039982968832".into(),
-            prepay_id: "383729303729303".into(),
-            refund_amount: 25.00,
-            refund_reason: Some("".into()),
-        };
-        assert_eq!(
-            serde_json::to_value(&refund_order).unwrap(),
-            serde_json::from_str::<Value>(expected_request).unwrap()
-        );
-    }
+    use super::super::tests::test_request_serialize_deserialize;
+    test_request_serialize_deserialize!(
+        (
+            test_refund_order_serialize,
+            r#"{"refundRequestId":"68711039982968832","prepayId":"383729303729303","refundAmount":25.00,"refundReason":""}"#,
+            RefundOrder {
+                refund_request_id: "68711039982968832".to_string(),
+                prepay_id: "383729303729303".to_string(),
+                refund_amount: 25.00,
+                refund_reason: Some("".to_string()),
+            }
+        ),
+        (
+            test_refund_result_deserialize,
+            r#"{"refundRequestId":"68711039982968832","prepayId":"383729303729303","orderAmount":"100.11","refundedAmount":"10.88","refundAmount":"5.00","remainingAttempts":8,"payerOpenId":"dde730c2e0ea1f1780cf26343b98fd3b","duplicateRequest":"N"}"#,
+            RefundResult {
+                refund_request_id: "68711039982968832".to_string(),
+                prepay_id: "383729303729303".to_string(),
+                order_amount: "100.11".to_string(),
+                refunded_amount: "10.88".to_string(),
+                refund_amount: "5.00".to_string(),
+                remaining_attempts: 8,
+                payer_open_id: "dde730c2e0ea1f1780cf26343b98fd3b".to_string(),
+                duplicate_request: RefundDuplicateStatus::No,
+            }
+        )
+    );
 }
