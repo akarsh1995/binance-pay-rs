@@ -41,8 +41,8 @@ impl From<API> for String {
 
 /// Response format from the Binance Pay API.
 #[derive(Deserialize)]
-struct Response {
-    data: Value,
+struct Response<T> {
+    data: T,
 }
 
 #[async_trait::async_trait]
@@ -52,9 +52,9 @@ where
 {
     async fn post(&self, client: &client::Client) -> Result<D> {
         let response = client
-            .post_signed_s::<Response, Self>(self.get_api().into(), Some(self))
+            .post_signed_s::<Response<D>, Self>(self.get_api().into(), Some(self))
             .await?;
-        Ok(serde_json::from_value(response.data)?)
+        Ok(response.data)
     }
 
     fn get_api(&self) -> API;
