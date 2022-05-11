@@ -1,4 +1,21 @@
 //! The module aims to provide the ease of use for the verification of the webhook request.
+/*!
+```rust,no_run
+# use bpay::c2b::webhook::verification::{Verifier, Verify};
+# use reqwest::header::HeaderMap;
+# use bpay::errors::Result;
+# fn main() -> Result<()>{
+# let headers = HeaderMap::new();
+# let body = "";
+let verifier = Verifier {
+    cert_serial: "Certificate's md5 hash goes here".to_string(),
+    cert_public: "Certificate's public key goes here".to_string(),
+};
+verifier.verify(&headers, &body)?;
+# Ok(())
+# }
+```
+*/
 
 use crate::errors::Error;
 use crate::errors::Result;
