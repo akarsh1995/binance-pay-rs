@@ -7,6 +7,7 @@ use self::{
     create_order::{CreateOrderResult, Order},
     query_order::{QueryOrder, QueryOrderResult},
     refund_order::{RefundOrder, RefundResult},
+    transfer_fund::{TransferFund, TransferFundResult},
     webhook::certificate::{Certificate, CertificateResult},
 };
 use crate::c2b::webhook::verification::Verifier;
@@ -24,6 +25,7 @@ pub enum API {
     CloseOrder,
     RefundOrder,
     BalanceQuery,
+    TransferFund,
 }
 
 impl From<API> for String {
@@ -35,6 +37,7 @@ impl From<API> for String {
             API::CloseOrder => "/binancepay/openapi/order/close",
             API::RefundOrder => "/binancepay/openapi/order/refund",
             API::BalanceQuery => "/binancepay/openapi/balance",
+            API::TransferFund => "/binancepay/openapi/wallet/transfer",
         })
     }
 }
@@ -79,7 +82,8 @@ impl_binance!(
     (QueryOrderResult, QueryOrder, QueryOrder),
     (CloseOrderResult, CloseOrder, CloseOrder),
     (RefundResult, RefundOrder, RefundOrder),
-    (WalletBalanceResult, WalletBalance, BalanceQuery)
+    (WalletBalanceResult, WalletBalance, BalanceQuery),
+    (TransferFundResult, TransferFund, TransferFund)
 );
 
 /// Get certificate out of the received response array.
