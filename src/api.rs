@@ -6,6 +6,7 @@ use self::{
     close_order::{CloseOrder, CloseOrderResult},
     create_order::{CreateOrderResult, Order},
     query_order::{QueryOrder, QueryOrderResult},
+    query_transfer::{QueryTransferRequest, QueryTransferResult},
     refund_order::{RefundOrder, RefundResult},
     transfer_fund::{TransferFund, TransferFundResult},
     webhook::certificate::{Certificate, CertificateResult},
@@ -25,6 +26,7 @@ pub enum API {
     RefundOrder,
     BalanceQuery,
     TransferFund,
+    QueryTransfer,
 }
 
 impl From<API> for String {
@@ -37,6 +39,7 @@ impl From<API> for String {
             API::RefundOrder => "/binancepay/openapi/order/refund",
             API::BalanceQuery => "/binancepay/openapi/balance",
             API::TransferFund => "/binancepay/openapi/wallet/transfer",
+            API::QueryTransfer => "/binancepay/openapi/wallet/transfer/query",
         })
     }
 }
@@ -82,7 +85,8 @@ impl_binance!(
     (CloseOrderResult, CloseOrder, CloseOrder),
     (RefundResult, RefundOrder, RefundOrder),
     (WalletBalanceResult, WalletBalance, BalanceQuery),
-    (TransferFundResult, TransferFund, TransferFund)
+    (TransferFundResult, TransferFund, TransferFund),
+    (QueryTransferResult, QueryTransferRequest, QueryTransfer)
 );
 
 /// Get certificate out of the received response array.

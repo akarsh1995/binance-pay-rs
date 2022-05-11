@@ -68,7 +68,7 @@ cargo run --example notification_axum_server
 - [ ] v0.3.0
     - [x] Close Order enum variants Success or Fail instead of bool
     - [x] Transfer Funds 
-    - [ ] Query Transfer Result
+    - [x] Query Transfer Result
     - [ ] Create Sub Merchant
     - [ ] Query Refund Order
     - [ ] Batch Payout
