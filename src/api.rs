@@ -6,7 +6,7 @@ use self::{
     close_order::{CloseOrder, CloseOrderResult},
     create_order::{CreateOrderResult, Order},
     query_order::{QueryOrder, QueryOrderResult},
-    refund_order::{RefundDuplicateStatus, RefundOrder, RefundResult},
+    refund_order::{RefundOrder, RefundResult},
     webhook::certificate::{Certificate, CertificateResult},
 };
 use crate::c2b::webhook::verification::Verifier;
@@ -42,14 +42,7 @@ impl From<API> for String {
 /// Response format from the Binance Pay API.
 #[derive(Deserialize)]
 struct Response {
-    status: String,
-
-    code: String,
-
     data: Value,
-
-    #[serde(rename = "errorMessage")]
-    error_message: Option<String>,
 }
 
 #[async_trait::async_trait]
@@ -120,7 +113,7 @@ impl Verifier {
 
 #[cfg(test)]
 mod tests {
-    use super::refund_order::RefundOrder;
+    use super::refund_order::{RefundDuplicateStatus, RefundOrder};
     use super::*;
     use crate::client::Client;
     use mockito;
