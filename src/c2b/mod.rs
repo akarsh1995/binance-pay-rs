@@ -1,14 +1,15 @@
 //! Contains all the possible Serializable and Deserializable
 //! request and response structs inside respective modules.
 pub mod balance_query;
+pub mod batch_payout;
 pub mod close_order;
 pub mod create_order;
 pub mod query_order;
+pub mod query_refund;
 pub mod query_transfer;
 pub mod refund_order;
 pub mod transfer_fund;
 pub mod webhook;
-pub mod query_refund;
 
 #[cfg(test)]
 mod tests {
