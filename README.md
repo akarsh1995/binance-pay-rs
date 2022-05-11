@@ -25,11 +25,12 @@ use bpay::api::create_order::{
 };
 use bpay::api::Binance;
 use bpay::client::Client;
+use bpay::errors::Result;
 use bpay::utils::create_nonce;
 use tokio;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()>{
 
    let order = Order {
        env: Env {
@@ -48,11 +49,12 @@ async fn main() {
    };
 
    let mut client = Client::from_env();
-   let create_order_result = order.post(&client).await.unwrap();
-   match create_order_result.terminal_type {
-       TerminalType::Web => assert!(true),
-       _ => assert!(false),
-   }
+   let create_order_result = order.post(&client).await?;
+   println!(
+       "This url can be sent across to complete the payment procedure: {}",
+       create_order_result.universal_url
+   );
+   Ok(())
 }
 ```
 
