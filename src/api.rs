@@ -4,7 +4,6 @@
 use self::{
     balance_query::{WalletBalance, WalletBalanceResult},
     create_sub_merchant::{SubMerchantRequest, SubMerchantResult},
-    query_refund::{QueryRefundRequest, QueryRefundResult},
     query_transfer::{QueryTransferRequest, QueryTransferResult},
     transfer_fund::{TransferFund, TransferFundResult},
     webhook::certificate::{Certificate, CertificateResult},
@@ -101,7 +100,11 @@ impl_binance!(
     (WalletBalanceResult, WalletBalance, BalanceQuery),
     (TransferFundResult, TransferFund, TransferFund),
     (QueryTransferResult, QueryTransferRequest, QueryTransfer),
-    (QueryRefundResult, QueryRefundRequest, QueryRefund),
+    (
+        refund::query::QueryRefundResult,
+        refund::query::QueryRefundRequest,
+        QueryRefund
+    ),
     (
         payout::initiate::Response,
         payout::initiate::Request,
