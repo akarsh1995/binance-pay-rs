@@ -1,18 +1,17 @@
 use bpay::api::close_order::CloseOrder;
-use bpay::api::create_order::{
-    Currency, Env, Goods, GoodsCategory, GoodsType, Order, TerminalType,
+use bpay::api::order::create::{
+    Currency, Env, Goods, GoodsCategory, GoodsType, Request, Response, TerminalType,
 };
 use bpay::api::Binance;
 use bpay::c2b::close_order::CloseOrderResult;
-use bpay::c2b::create_order::CreateOrderResult;
 use bpay::client::Client;
 use tokio;
 
 async fn create_dummy_order(
     merchant_trade_no: &str,
     client: &Client,
-) -> bpay::errors::Result<CreateOrderResult> {
-    let order = Order {
+) -> bpay::errors::Result<Response> {
+    let order = Request {
         env: Env {
             terminal_type: TerminalType::Web,
         },

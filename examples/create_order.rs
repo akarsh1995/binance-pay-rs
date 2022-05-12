@@ -1,5 +1,5 @@
-use bpay::api::create_order::{
-    Currency, Env, Goods, GoodsCategory, GoodsType, Order, TerminalType,
+use bpay::api::order::create::{
+    Currency, Env, Goods, GoodsCategory, GoodsType, Request as OrderRequest, TerminalType,
 };
 use bpay::api::Binance;
 use bpay::client::Client;
@@ -9,7 +9,7 @@ use tokio;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let order = Order {
+    let order = OrderRequest {
         env: Env {
             terminal_type: TerminalType::Web,
         },

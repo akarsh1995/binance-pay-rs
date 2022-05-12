@@ -1,6 +1,6 @@
 //! Order notification json deserialization format.
 
-pub use crate::c2b::create_order::{Currency, TerminalType};
+pub use crate::c2b::order::create::{Currency, TerminalType};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, PartialEq, Eq)]

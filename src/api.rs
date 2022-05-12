@@ -5,7 +5,6 @@ use self::{
     balance_query::{WalletBalance, WalletBalanceResult},
     batch_payout::{BatchPayoutRequest, BatchPayoutResult},
     close_order::{CloseOrder, CloseOrderResult},
-    create_order::{CreateOrderResult, Order},
     create_sub_merchant::{SubMerchantRequest, SubMerchantResult},
     query_order::{QueryOrder, QueryOrderResult},
     query_payout::{PayoutQueryRequest, TransferQueryResult},
@@ -91,7 +90,7 @@ macro_rules! impl_binance {
 }
 
 impl_binance!(
-    (CreateOrderResult, Order, CreateOrder),
+    (order::create::Response, order::create::Request, CreateOrder),
     (Vec<CertificateResult>, Certificate, QueryCertificate),
     (QueryOrderResult, QueryOrder, QueryOrder),
     (CloseOrderResult, CloseOrder, CloseOrder),
