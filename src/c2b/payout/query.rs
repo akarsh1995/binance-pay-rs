@@ -19,7 +19,7 @@ pub enum DetailStatus {
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct PayoutQueryRequest {
+pub struct Request {
     /// The unique ID assigned by the merchant to identify a payout request.
     request_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -87,7 +87,7 @@ pub struct TransferDetailResult {
 #[derive(Deserialize, Debug)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "camelCase")]
-pub struct TransferQueryResult {
+pub struct Response {
     /// The passed-in request ID
     pub request_id: String,
 
@@ -117,7 +117,7 @@ mod tests {
         (
             test_payout_query_request_serialize,
             "{\"requestId\":\"payouttransfer19998\"}",
-            PayoutQueryRequest {
+            Request {
                 request_id: "payouttransfer19998".to_string(),
                 detail_status: None,
             }
@@ -160,7 +160,7 @@ mod tests {
             ]
           }
         "#,
-            TransferQueryResult {
+            Response {
                 request_id: "payoutqueryrequest1232455".to_string(),
                 batch_status: BatchStatus::Accepted,
                 merchant_id: 354195960,

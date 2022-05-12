@@ -4,7 +4,6 @@ pub mod balance_query;
 pub mod create_sub_merchant;
 pub mod order;
 pub mod payout;
-pub mod query_payout;
 pub mod query_refund;
 pub mod query_transfer;
 pub mod refund_order;

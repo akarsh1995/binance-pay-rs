@@ -4,7 +4,6 @@
 use self::{
     balance_query::{WalletBalance, WalletBalanceResult},
     create_sub_merchant::{SubMerchantRequest, SubMerchantResult},
-    query_payout::{PayoutQueryRequest, TransferQueryResult},
     query_refund::{QueryRefundRequest, QueryRefundResult},
     query_transfer::{QueryTransferRequest, QueryTransferResult},
     refund_order::{RefundOrder, RefundResult},
@@ -106,7 +105,7 @@ impl_binance!(
         BatchPayout
     ),
     (SubMerchantResult, SubMerchantRequest, CreateSubMerchant),
-    (TransferQueryResult, PayoutQueryRequest, PayoutQuery)
+    (payout::query::Response, payout::query::Request, PayoutQuery)
 );
 
 /// Get certificate out of the received response array.

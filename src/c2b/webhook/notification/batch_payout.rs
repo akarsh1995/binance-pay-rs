@@ -1,6 +1,6 @@
 //! Order notification json deserialization format.
 
-pub use crate::c2b::query_payout::BatchStatus as BizStatus;
+pub use crate::c2b::payout::query::BatchStatus as BizStatus;
 use serde::Deserialize;
 
 #[cfg(test)]
