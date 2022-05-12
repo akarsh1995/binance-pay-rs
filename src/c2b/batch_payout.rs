@@ -23,9 +23,9 @@ pub enum BizScene {
     Others,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ReceiverType {
+pub enum ReceiveType {
     PayId,
     BinanceId,
     Email,
@@ -38,7 +38,7 @@ pub struct TransferDetailReq {
     merchant_send_id: String,
 
     /// Receiver's ID type  support payout to non-binance users
-    receive_type: ReceiverType,
+    receive_type: ReceiveType,
 
     /// If it is a non-binance user email address, he or she needs to register a binance account to receive the payout.  
     /// The amount will be automatically refunded to your wallet if receivers haven't completed the registration with 72 hours.
@@ -140,7 +140,7 @@ mod tests {
                     TransferDetailReq {
                         merchant_send_id: "22231313131".to_string(),
                         transfer_amount: 110.3,
-                        receive_type: ReceiverType::PayId,
+                        receive_type: ReceiveType::PayId,
                         transfer_method: TransferMethod::SpotWallet,
                         receiver: "354205155".to_string(),
                         remark: Some("test1".to_string()),
@@ -148,7 +148,7 @@ mod tests {
                     TransferDetailReq {
                         merchant_send_id: "21231313132".to_string(),
                         transfer_amount: 90.1,
-                        receive_type: ReceiverType::PayId,
+                        receive_type: ReceiveType::PayId,
                         transfer_method: TransferMethod::SpotWallet,
                         receiver: "354205153".to_string(),
                         remark: Some("test2".to_string()),

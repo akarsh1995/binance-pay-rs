@@ -8,6 +8,7 @@ use self::{
     create_order::{CreateOrderResult, Order},
     create_sub_merchant::{SubMerchantRequest, SubMerchantResult},
     query_order::{QueryOrder, QueryOrderResult},
+    query_payout::{PayoutQueryRequest, TransferQueryResult},
     query_refund::{QueryRefundRequest, QueryRefundResult},
     query_transfer::{QueryTransferRequest, QueryTransferResult},
     refund_order::{RefundOrder, RefundResult},
@@ -33,6 +34,7 @@ pub enum API {
     QueryRefund,
     BatchPayout,
     CreateSubMerchant,
+    PayoutQuery,
 }
 
 impl From<API> for String {
@@ -49,6 +51,7 @@ impl From<API> for String {
             API::QueryRefund => "/binancepay/openapi/order/refund/query",
             API::BatchPayout => "/binancepay/openapi/payout/transfer",
             API::CreateSubMerchant => "/binancepay/openapi/submerchant/add",
+            API::PayoutQuery => "/binancepay/openapi/payout/query",
         })
     }
 }
@@ -98,7 +101,8 @@ impl_binance!(
     (QueryTransferResult, QueryTransferRequest, QueryTransfer),
     (QueryRefundResult, QueryRefundRequest, QueryRefund),
     (BatchPayoutResult, BatchPayoutRequest, BatchPayout),
-    (SubMerchantResult, SubMerchantRequest, CreateSubMerchant)
+    (SubMerchantResult, SubMerchantRequest, CreateSubMerchant),
+    (TransferQueryResult, PayoutQueryRequest, PayoutQuery)
 );
 
 /// Get certificate out of the received response array.

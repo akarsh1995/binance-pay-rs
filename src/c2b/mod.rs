@@ -6,6 +6,7 @@ pub mod close_order;
 pub mod create_order;
 pub mod create_sub_merchant;
 pub mod query_order;
+pub mod query_payout;
 pub mod query_refund;
 pub mod query_transfer;
 pub mod refund_order;

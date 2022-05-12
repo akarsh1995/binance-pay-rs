@@ -73,4 +73,4 @@ cargo run --example notification_axum_server
     - [x] Query Refund Order
     - [x] Batch Payout
     - [ ] Payout Notification
-    - [ ] Payout Query 
+    - [x] Payout Query 
