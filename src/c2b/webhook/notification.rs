@@ -30,6 +30,7 @@ match notification {
 ```
 */
 
+pub mod batch_payout;
 pub mod order;
 pub mod refund;
 
@@ -42,6 +43,7 @@ use crate::errors::Error;
 pub enum BizType {
     Pay,
     PayRefund,
+    Payout,
 }
 
 #[derive(Deserialize, Debug)]
@@ -77,6 +79,11 @@ pub enum Notification {
         biz_status: refund::BizStatus,
         refund_detail: refund::Refund,
     },
+    Payout {
+        biz_id: u128,
+        biz_status: batch_payout::BizStatus,
+        payout_detail: batch_payout::Payout,
+    },
 }
 
 impl TryFrom<NotificationRequestParams> for Notification {
@@ -93,6 +100,11 @@ impl TryFrom<NotificationRequestParams> for Notification {
                 biz_id: params.biz_id,
                 biz_status: serde_json::from_value::<refund::BizStatus>(params.biz_status)?,
                 refund_detail: serde_json::from_str::<refund::Refund>(&params.data)?,
+            }),
+            BizType::Payout => Ok(Notification::Payout {
+                biz_id: params.biz_id,
+                biz_status: serde_json::from_value::<batch_payout::BizStatus>(params.biz_status)?,
+                payout_detail: serde_json::from_str::<batch_payout::Payout>(&params.data)?,
             }),
         }
     }
@@ -158,6 +170,31 @@ mod tests {
                 assert_eq!(biz_status, refund::BizStatus::RefundSuccess);
                 assert_eq!(details.merchant_trade_no, "6177e6ae81ce6f001b4a6233");
                 assert_eq!(details.refund_info.order_amount, "0.01000000");
+            }
+            _ => panic!("Unexpected notification type"),
+        }
+    }
+    #[test]
+    fn test_payout_notification_parsing() {
+        let body = r#"
+        {
+            "bizType":"PAYOUT",
+            "data":"{\"batchStatus\":\"SUCCESS\",\"currency\":\"BUSD\",\"merchantId\":100100006288,\"requestId\":\"gg8127129\",\"totalAmount\":2.00000000,\"totalNumber\":2}",
+            "bizId":29383937493038367292,
+            "bizStatus":"SUCCESS"
+        }
+        "#;
+        let notification = Notification::try_from(body).unwrap();
+        match notification {
+            Notification::Payout {
+                biz_id,
+                biz_status,
+                payout_detail: details,
+            } => {
+                assert_eq!(biz_id, 29383937493038367292);
+                assert_eq!(biz_status, batch_payout::BizStatus::Success);
+                assert_eq!(details.request_id, "gg8127129");
+                assert_eq!(details.total_amount, 2.0);
             }
             _ => panic!("Unexpected notification type"),
         }

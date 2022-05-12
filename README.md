@@ -65,12 +65,12 @@ cargo run --example notification_axum_server
 
 # Roadmap
 
-- [ ] v0.3.0
+- [x] v0.3.0
     - [x] Close Order enum variants Success or Fail instead of bool
     - [x] Transfer Funds 
     - [x] Query Transfer Result
     - [x] Create Sub Merchant
     - [x] Query Refund Order
     - [x] Batch Payout
-    - [ ] Payout Notification
+    - [x] Payout Notification
     - [x] Payout Query 

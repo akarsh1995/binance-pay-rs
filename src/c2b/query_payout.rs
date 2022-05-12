@@ -26,7 +26,7 @@ pub struct PayoutQueryRequest {
     detail_status: Option<DetailStatus>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Eq, PartialEq)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum BatchStatus {
