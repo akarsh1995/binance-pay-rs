@@ -80,45 +80,37 @@ macro_rules! impl_binance {
 impl_binance!(
     (order::create::Response, order::create::Request, CreateOrder),
     (Vec<CertificateResult>, Certificate, QueryCertificate),
-    (
-        order::query::QueryOrderResult,
-        order::query::QueryOrder,
-        QueryOrder
-    ),
+    (order::query::Response, order::query::Request, QueryOrder),
     (order::close::Response, order::close::Request, CloseOrder),
     (
-        refund::create::RefundResult,
-        refund::create::RefundOrder,
+        refund::create::Response,
+        refund::create::Request,
         RefundOrder
     ),
     (
-        wallet_balance::query::WalletBalanceResult,
-        wallet_balance::query::WalletBalance,
+        wallet_balance::query::Response,
+        wallet_balance::query::Request,
         BalanceQuery
     ),
     (
-        transfer::initiate::TransferFundResult,
-        transfer::initiate::TransferFund,
+        transfer::initiate::Response,
+        transfer::initiate::Request,
         TransferFund
     ),
     (
-        transfer::query::QueryTransferResult,
-        transfer::query::QueryTransferRequest,
+        transfer::query::Response,
+        transfer::query::Request,
         QueryTransfer
     ),
-    (
-        refund::query::QueryRefundResult,
-        refund::query::QueryRefundRequest,
-        QueryRefund
-    ),
+    (refund::query::Response, refund::query::Request, QueryRefund),
     (
         payout::initiate::Response,
         payout::initiate::Request,
         BatchPayout
     ),
     (
-        sub_merchant::create::SubMerchantResult,
-        sub_merchant::create::SubMerchantRequest,
+        sub_merchant::create::Response,
+        sub_merchant::create::Request,
         CreateSubMerchant
     ),
     (payout::query::Response, payout::query::Request, PayoutQuery)

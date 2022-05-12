@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct RefundOrder {
+pub struct Request {
     /// The unique ID assigned by the merchant to identify a refund request.The value must be same for one refund request.
     pub refund_request_id: String,
 
@@ -32,7 +32,7 @@ pub enum RefundDuplicateStatus {
 #[derive(Deserialize, Debug)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "camelCase")]
-pub struct RefundResult {
+pub struct Response {
     ///  The unique ID assigned by the merchant to identify a refund request.
     pub refund_request_id: String,
 
@@ -65,7 +65,7 @@ mod tests {
         (
             test_refund_order_serialize,
             r#"{"refundRequestId":"68711039982968832","prepayId":"383729303729303","refundAmount":25.00,"refundReason":""}"#,
-            RefundOrder {
+            Request {
                 refund_request_id: "68711039982968832".to_string(),
                 prepay_id: "383729303729303".to_string(),
                 refund_amount: 25.00,
@@ -75,7 +75,7 @@ mod tests {
         (
             test_refund_result_deserialize,
             r#"{"refundRequestId":"68711039982968832","prepayId":"383729303729303","orderAmount":"100.11","refundedAmount":"10.88","refundAmount":"5.00","remainingAttempts":8,"payerOpenId":"dde730c2e0ea1f1780cf26343b98fd3b","duplicateRequest":"N"}"#,
-            RefundResult {
+            Response {
                 refund_request_id: "68711039982968832".to_string(),
                 prepay_id: "383729303729303".to_string(),
                 order_amount: "100.11".to_string(),

@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Debug)]
-pub struct QueryTransferRequest {
+pub struct Request {
     /// the value of requestId of provoking Transfer Fund API
     pub tran_id: String,
 }
@@ -19,7 +19,7 @@ pub enum Status {
 
 #[derive(Deserialize, Debug)]
 #[cfg_attr(test, derive(Serialize))]
-pub struct QueryTransferResult {
+pub struct Response {
     ///	string	Y	-	Used to query the transfer status, query the necessary fields for the transfer status
     pub tran_id: String,
     /// 	string	Y		SUCCESS (indicating that the transfer is completely successful), FAILURE (indicating that the transfer has failed, it may be that the transferor has a problem with the transferee), PROCESS (the transfer is in progress)
@@ -34,14 +34,14 @@ mod tests {
         (
             test_query_transfer_request_serialize,
             r#"{"tran_id":"100002021071407140001"}"#,
-            QueryTransferRequest {
+            Request {
                 tran_id: "100002021071407140001".to_string(),
             }
         ),
         (
             test_query_transfer_result_deserialize,
             r#"{"tran_id":"100002021071407140001","status":"SUCCESS"}"#,
-            QueryTransferResult {
+            Response {
                 tran_id: "100002021071407140001".to_string(),
                 status: Status::Success,
             }

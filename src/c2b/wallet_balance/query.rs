@@ -11,7 +11,7 @@ pub enum WalletType {
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct WalletBalance {
+pub struct Request {
     /// Binance wallet to query, currently supported enum values.
     pub wallet: WalletType,
 
@@ -22,7 +22,7 @@ pub struct WalletBalance {
 #[derive(Deserialize, Debug)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "camelCase")]
-pub struct WalletBalanceResult {
+pub struct Response {
     /// Current balance free to use
     pub balance: f64,
 
@@ -48,7 +48,7 @@ mod tests {
         (
             test_wallet_balance_serialize,
             r#"{"wallet":"SPOT_WALLET","currency":"BUSD"}"#,
-            WalletBalance {
+            Request {
                 wallet: WalletType::SpotWallet,
                 currency: "BUSD".to_string(),
             }
@@ -64,7 +64,7 @@ mod tests {
                 "availableBtcValuation": 22.98780000
             }
             "#,
-            WalletBalanceResult {
+            Response {
                 balance: 990000.0,
                 asset: "BUSD".to_string(),
                 fiat: "USD".to_string(),

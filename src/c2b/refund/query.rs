@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct QueryRefundRequest {
+pub struct Request {
     /// The unique ID assigned by the merchant to identify a refund request.
     pub refund_request_id: String,
 }
@@ -21,7 +21,7 @@ pub enum RefundStatus {
 #[derive(Deserialize, Debug)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "camelCase")]
-pub struct QueryRefundResult {
+pub struct Response {
     ///  The unique ID assigned by the merchant to identify a refund request.
     pub refund_request_id: String,
 
@@ -55,14 +55,14 @@ mod tests {
         (
             test_query_refund_request_serialize,
             r#"{  "refundRequestId": "68711039982968832"}"#,
-            QueryRefundRequest {
+            Request {
                 refund_request_id: "68711039982968832".to_string(),
             }
         ),
         (
             test_query_refund_result_deserialize,
             r#"{"refundRequestId":"68711039982968832","prepayId":"383729303729303","orderAmount":"100.11","refundedAmount":"10.88","refundAmount":"5.00","remainingAttempts":8,"payerOpenId":"dde730c2e0ea1f1780cf26343b98fd3b","refundStatus":"REFUND_SUCCESS"}"#,
-            QueryRefundResult {
+            Response {
                 refund_request_id: "68711039982968832".to_string(),
                 prepay_id: "383729303729303".to_string(),
                 order_amount: "100.11".to_string(),

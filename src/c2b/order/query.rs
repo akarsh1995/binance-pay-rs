@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 /// Either of the prepay id or the merchant trade no must be present.
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct QueryOrder {
+pub struct Request {
     // maximum length 32,letter or digit, no other symbol allowed, can not be empty if prepayId is empty
     #[serde(skip_serializing_if = "Option::is_none")]
     prepay_id: Option<String>,
@@ -33,7 +33,7 @@ pub enum Status {
 #[derive(Deserialize, Debug)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "camelCase")]
-pub struct QueryOrderResult {
+pub struct Response {
     /// The merchant account id, issued when merchant been created at Binance.
     pub merchant_id: u64,
 
@@ -74,7 +74,7 @@ pub struct QueryOrderResult {
     pub create_time: u64,
 }
 
-impl QueryOrder {
+impl Request {
     pub fn new(prepay_id: Option<String>, merchant_trade_no: Option<String>) -> Self {
         assert!(prepay_id.is_some() || merchant_trade_no.is_some());
         Self {
@@ -91,7 +91,7 @@ mod tests {
         (
             test_query_order_serialization,
             r#"{"merchantTradeNo":"9825382937292"}"#,
-            QueryOrder::new(None, Some("9825382937292".into()))
+            Request::new(None, Some("9825382937292".into()))
         ),
         (
             test_query_order_result_deserialization,
@@ -112,7 +112,7 @@ mod tests {
                 "createTime":1425744000000
               }
             "#,
-            QueryOrderResult {
+            Response {
                 merchant_id: 98729382672,
                 prepay_id: "383729303729303".into(),
                 transaction_id: Some("23729202729220282".to_string()),
