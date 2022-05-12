@@ -3,7 +3,6 @@
 
 use self::{
     balance_query::{WalletBalance, WalletBalanceResult},
-    batch_payout::{BatchPayoutRequest, BatchPayoutResult},
     create_sub_merchant::{SubMerchantRequest, SubMerchantResult},
     query_payout::{PayoutQueryRequest, TransferQueryResult},
     query_refund::{QueryRefundRequest, QueryRefundResult},
@@ -101,7 +100,11 @@ impl_binance!(
     (TransferFundResult, TransferFund, TransferFund),
     (QueryTransferResult, QueryTransferRequest, QueryTransfer),
     (QueryRefundResult, QueryRefundRequest, QueryRefund),
-    (BatchPayoutResult, BatchPayoutRequest, BatchPayout),
+    (
+        payout::initiate::Response,
+        payout::initiate::Request,
+        BatchPayout
+    ),
     (SubMerchantResult, SubMerchantRequest, CreateSubMerchant),
     (TransferQueryResult, PayoutQueryRequest, PayoutQuery)
 );

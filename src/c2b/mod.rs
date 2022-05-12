@@ -1,9 +1,9 @@
 //! Contains all the possible Serializable and Deserializable
 //! request and response structs inside respective modules.
 pub mod balance_query;
-pub mod batch_payout;
 pub mod create_sub_merchant;
 pub mod order;
+pub mod payout;
 pub mod query_payout;
 pub mod query_refund;
 pub mod query_transfer;

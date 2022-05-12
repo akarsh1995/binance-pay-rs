@@ -2,8 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
-pub use super::batch_payout::ReceiveType;
-pub use super::batch_payout::TransferMethod;
+pub use crate::c2b::payout::initiate::ReceiveType;
+pub use crate::c2b::payout::initiate::TransferMethod;
 
 #[derive(Serialize, Debug)]
 pub enum DetailStatus {

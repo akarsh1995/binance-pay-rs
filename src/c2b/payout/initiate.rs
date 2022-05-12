@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub use super::balance_query::WalletType as TransferMethod;
+pub use crate::c2b::balance_query::WalletType as TransferMethod;
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -56,7 +56,7 @@ pub struct TransferDetailReq {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct BatchPayoutRequest {
+pub struct Request {
     /// The unique ID assigned by the merchant to identify a payout request.
     request_id: String,
 
@@ -90,7 +90,7 @@ pub enum Status {
 #[derive(Deserialize, Debug)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "camelCase")]
-pub struct BatchPayoutResult {
+pub struct Response {
     pub request_id: String,
     pub status: Status,
 }
@@ -129,7 +129,7 @@ mod tests {
             ]
           } 
         "#,
-            BatchPayoutRequest {
+            Request {
                 request_id: "samplerequest1234".to_string(),
                 batch_name: "sample batch".to_string(),
                 currency: "BUSD".to_string(),
@@ -159,7 +159,7 @@ mod tests {
         (
             test_batch_payout_deserialize,
             r#"{"requestId":"samplerequest1234","status":"ACCEPTED"}"#,
-            BatchPayoutResult {
+            Response {
                 request_id: "samplerequest1234".to_string(),
                 status: Status::Accepted,
             }
