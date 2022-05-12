@@ -3,6 +3,13 @@
 pub use crate::c2b::create_order::{Currency, TerminalType};
 use serde::Deserialize;
 
+#[derive(Deserialize, Debug, PartialEq, Eq)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum BizStatus {
+    PaySuccess,
+    PayClosed,
+}
+
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct OrderNotification {

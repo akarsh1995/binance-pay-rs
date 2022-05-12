@@ -2,7 +2,7 @@
 Webhook notification payload parsing helpers.
 ```
 # use bpay::c2b::webhook::notification::{Notification, order::Currency};
-# use bpay::c2b::webhook::notification::BizStatus;
+# use bpay::c2b::webhook::notification::order::BizStatus;
 # fn main() {
 let body = r#"{
     "bizType": "PAY",
@@ -34,7 +34,7 @@ pub mod order;
 pub mod refund;
 
 use serde::Deserialize;
-use serde_json;
+use serde_json::{self, Value};
 
 use crate::errors::Error;
 #[derive(Deserialize, Debug, Clone)]
@@ -42,15 +42,6 @@ use crate::errors::Error;
 pub enum BizType {
     Pay,
     PayRefund,
-}
-
-#[derive(Deserialize, Debug, PartialEq, Eq)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum BizStatus {
-    PaySuccess,
-    PayClosed,
-    RefundSuccess,
-    RefundRejected,
 }
 
 #[derive(Deserialize, Debug)]
@@ -61,7 +52,7 @@ pub struct NotificationRequestParams {
     ///	string	Y	-	Prepay order id
     pub biz_id: u128,
     ///	string	Y	-	"PAY_SUCCESS"",PAY_CLOSED"
-    pub biz_status: BizStatus,
+    pub biz_status: Value,
     ///	string	Y	-	JSON string, data details refer to
     pub data: String,
 }
@@ -78,12 +69,12 @@ impl TryFrom<&str> for NotificationRequestParams {
 pub enum Notification {
     Order {
         biz_id: u128,
-        biz_status: BizStatus,
+        biz_status: order::BizStatus,
         order_detail: order::OrderNotification,
     },
     Refund {
         biz_id: u128,
-        biz_status: BizStatus,
+        biz_status: refund::BizStatus,
         refund_detail: refund::Refund,
     },
 }
@@ -95,12 +86,12 @@ impl TryFrom<NotificationRequestParams> for Notification {
         match params.biz_type {
             BizType::Pay => Ok(Notification::Order {
                 biz_id: params.biz_id,
-                biz_status: params.biz_status,
+                biz_status: serde_json::from_value::<order::BizStatus>(params.biz_status)?,
                 order_detail: serde_json::from_str::<order::OrderNotification>(&params.data)?,
             }),
             BizType::PayRefund => Ok(Notification::Refund {
                 biz_id: params.biz_id,
-                biz_status: params.biz_status,
+                biz_status: serde_json::from_value::<refund::BizStatus>(params.biz_status)?,
                 refund_detail: serde_json::from_str::<refund::Refund>(&params.data)?,
             }),
         }
@@ -137,7 +128,7 @@ mod tests {
                 order_detail: details,
             } => {
                 assert_eq!(biz_id, 29383937493038367292);
-                assert_eq!(biz_status, BizStatus::PaySuccess);
+                assert_eq!(biz_status, order::BizStatus::PaySuccess);
                 assert_eq!(details.merchant_trade_no, "9825382937292");
                 assert_eq!(details.total_fee, 0.88);
                 assert_eq!(details.currency, Currency::USDT);
@@ -164,7 +155,7 @@ mod tests {
                 refund_detail: details,
             } => {
                 assert_eq!(biz_id, 123289163323899904);
-                assert_eq!(biz_status, BizStatus::RefundSuccess);
+                assert_eq!(biz_status, refund::BizStatus::RefundSuccess);
                 assert_eq!(details.merchant_trade_no, "6177e6ae81ce6f001b4a6233");
                 assert_eq!(details.refund_info.order_amount, "0.01000000");
             }

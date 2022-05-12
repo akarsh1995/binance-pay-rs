@@ -1,6 +1,13 @@
 pub use crate::c2b::refund_order::RefundResult as RefundInfo;
 use serde::Deserialize;
 
+#[derive(Deserialize, Debug, PartialEq, Eq)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum BizStatus {
+    RefundSuccess,
+    RefundRejected,
+}
+
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Refund {
