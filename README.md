@@ -3,7 +3,10 @@
 Unofficial Rust Library for the [Binance Pay API](https://developers.binance.com/docs/binance-pay/introduction)
 
 
-# Quickstart
+> :warning: The APIs are expected to work fine, still, **You might encounter bugs. Please use at your own risk.**   
+The current version implements all the API endpoints as documented in the Binance pay developer documentation.
+
+## Quickstart
 
 Make sure the following env variables are set:
   - `BINANCE_PAY_API_KEY`
@@ -17,7 +20,7 @@ binance-pay-rs = "^0"
 tokio = { version = "1.18.0", features = ["rt-multi-thread", "macros"] }
 ```
 
-## Example 
+In your `main.rs` file
 
 ```rust
 use bpay::api::create_order::{
@@ -63,14 +66,13 @@ async fn main() -> Result<()>{
 cargo run --example notification_axum_server
 ```
 
-# Roadmap
+### Contributing:
 
-- [x] v0.3.0
-    - [x] Close Order enum variants Success or Fail instead of bool
-    - [x] Transfer Funds 
-    - [x] Query Transfer Result
-    - [x] Create Sub Merchant
-    - [x] Query Refund Order
-    - [x] Batch Payout
-    - [x] Payout Notification
-    - [x] Payout Query 
+
+Simply create a pull request. Properly documented code and tests.  
+
+To run the tests:
+
+```sh
+cargo t
+```
