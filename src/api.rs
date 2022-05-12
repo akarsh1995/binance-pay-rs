@@ -4,7 +4,6 @@
 use self::{
     balance_query::{WalletBalance, WalletBalanceResult},
     batch_payout::{BatchPayoutRequest, BatchPayoutResult},
-    close_order::{CloseOrder, CloseOrderResult},
     create_sub_merchant::{SubMerchantRequest, SubMerchantResult},
     query_order::{QueryOrder, QueryOrderResult},
     query_payout::{PayoutQueryRequest, TransferQueryResult},
@@ -93,7 +92,7 @@ impl_binance!(
     (order::create::Response, order::create::Request, CreateOrder),
     (Vec<CertificateResult>, Certificate, QueryCertificate),
     (QueryOrderResult, QueryOrder, QueryOrder),
-    (CloseOrderResult, CloseOrder, CloseOrder),
+    (order::close::Response, order::close::Request, CloseOrder),
     (RefundResult, RefundOrder, RefundOrder),
     (WalletBalanceResult, WalletBalance, BalanceQuery),
     (TransferFundResult, TransferFund, TransferFund),

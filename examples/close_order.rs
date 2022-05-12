@@ -1,17 +1,17 @@
-use bpay::api::close_order::CloseOrder;
+use bpay::api::order::close::{Request as CloseOrderRequest, Response as CloseOrderResponse};
 use bpay::api::order::create::{
-    Currency, Env, Goods, GoodsCategory, GoodsType, Request, Response, TerminalType,
+    Currency, Env, Goods, GoodsCategory, GoodsType, Request as OrderRequest,
+    Response as OrderResponse, TerminalType,
 };
 use bpay::api::Binance;
-use bpay::c2b::close_order::CloseOrderResult;
 use bpay::client::Client;
 use tokio;
 
 async fn create_dummy_order(
     merchant_trade_no: &str,
     client: &Client,
-) -> bpay::errors::Result<Response> {
-    let order = Request {
+) -> bpay::errors::Result<OrderResponse> {
+    let order = OrderRequest {
         env: Env {
             terminal_type: TerminalType::Web,
         },
@@ -38,12 +38,12 @@ async fn main() -> bpay::errors::Result<()> {
     // do something with dummy_order
     // or
     // close the order
-    let close_order_request = CloseOrder::new(None, Some(merchant_trade_no.to_string()));
+    let close_order_request = CloseOrderRequest::new(None, Some(merchant_trade_no.to_string()));
 
     let close_order_result = close_order_request.post(&client).await?;
     match close_order_result {
-        CloseOrderResult::Success => println!("Order closed successfully"),
-        CloseOrderResult::Failure => println!("Order could not be closed"),
+        CloseOrderResponse::Success => println!("Order closed successfully"),
+        CloseOrderResponse::Failure => println!("Order could not be closed"),
     }
     Ok(())
 }
