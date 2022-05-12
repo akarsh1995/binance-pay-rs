@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub use crate::c2b::balance_query::WalletType as TransferMethod;
+pub use crate::c2b::wallet_balance::query::WalletType as TransferMethod;
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]

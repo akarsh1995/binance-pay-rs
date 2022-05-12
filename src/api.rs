@@ -1,10 +1,7 @@
 //! Use Binance [`client::Client`] in conjunction with the Request Response structs.
 //! - [`create_order::Order`] and [`create_order::CreateOrderResult`]
 
-use self::{
-    balance_query::{WalletBalance, WalletBalanceResult},
-    webhook::certificate::{Certificate, CertificateResult},
-};
+use self::webhook::certificate::{Certificate, CertificateResult};
 use crate::c2b::webhook::verification::Verifier;
 pub use crate::c2b::*;
 use crate::client;
@@ -94,7 +91,11 @@ impl_binance!(
         refund::create::RefundOrder,
         RefundOrder
     ),
-    (WalletBalanceResult, WalletBalance, BalanceQuery),
+    (
+        wallet_balance::query::WalletBalanceResult,
+        wallet_balance::query::WalletBalance,
+        BalanceQuery
+    ),
     (
         transfer::initiate::TransferFundResult,
         transfer::initiate::TransferFund,
