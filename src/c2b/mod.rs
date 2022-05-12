@@ -6,7 +6,7 @@ pub mod payout;
 pub mod query_transfer;
 pub mod refund;
 pub mod sub_merchant;
-pub mod transfer_fund;
+pub mod transfer;
 pub mod webhook;
 
 #[cfg(test)]

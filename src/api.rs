@@ -4,7 +4,6 @@
 use self::{
     balance_query::{WalletBalance, WalletBalanceResult},
     query_transfer::{QueryTransferRequest, QueryTransferResult},
-    transfer_fund::{TransferFund, TransferFundResult},
     webhook::certificate::{Certificate, CertificateResult},
 };
 use crate::c2b::webhook::verification::Verifier;
@@ -97,7 +96,11 @@ impl_binance!(
         RefundOrder
     ),
     (WalletBalanceResult, WalletBalance, BalanceQuery),
-    (TransferFundResult, TransferFund, TransferFund),
+    (
+        transfer::initiate::TransferFundResult,
+        transfer::initiate::TransferFund,
+        TransferFund
+    ),
     (QueryTransferResult, QueryTransferRequest, QueryTransfer),
     (
         refund::query::QueryRefundResult,
