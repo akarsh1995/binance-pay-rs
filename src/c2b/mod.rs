@@ -3,7 +3,6 @@
 pub mod balance_query;
 pub mod order;
 pub mod payout;
-pub mod query_transfer;
 pub mod refund;
 pub mod sub_merchant;
 pub mod transfer;
