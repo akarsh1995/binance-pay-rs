@@ -1,6 +1,6 @@
 //! Query order API used for merchant/partner to query order status
 
-pub use super::webhook::notification::order::TerminalType as TradeType;
+pub use crate::c2b::webhook::notification::order::TerminalType as TradeType;
 use serde::{Deserialize, Serialize};
 
 /// Either of the prepay id or the merchant trade no must be present.
