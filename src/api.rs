@@ -83,8 +83,8 @@ impl_binance!(
     (order::query::Response, order::query::Request, QueryOrder),
     (order::close::Response, order::close::Request, CloseOrder),
     (
-        refund::create::Response,
-        refund::create::Request,
+        refund::initiate::Response,
+        refund::initiate::Request,
         RefundOrder
     ),
     (
