@@ -60,7 +60,7 @@ pub struct RefundResult {
 
 #[cfg(test)]
 mod tests {
-    use super::super::tests::test_request_serialize_deserialize;
+    use crate::c2b::tests::test_request_serialize_deserialize;
     test_request_serialize_deserialize!(
         (
             test_refund_order_serialize,

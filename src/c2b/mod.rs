@@ -6,7 +6,7 @@ pub mod order;
 pub mod payout;
 pub mod query_refund;
 pub mod query_transfer;
-pub mod refund_order;
+pub mod refund;
 pub mod transfer_fund;
 pub mod webhook;
 

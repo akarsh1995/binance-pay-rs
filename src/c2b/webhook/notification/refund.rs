@@ -1,4 +1,4 @@
-pub use crate::c2b::refund_order::RefundResult as RefundInfo;
+pub use crate::c2b::refund::create::RefundResult as RefundInfo;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, PartialEq, Eq)]
