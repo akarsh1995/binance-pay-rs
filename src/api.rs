@@ -3,7 +3,6 @@
 
 use self::{
     balance_query::{WalletBalance, WalletBalanceResult},
-    create_sub_merchant::{SubMerchantRequest, SubMerchantResult},
     query_transfer::{QueryTransferRequest, QueryTransferResult},
     transfer_fund::{TransferFund, TransferFundResult},
     webhook::certificate::{Certificate, CertificateResult},
@@ -110,7 +109,11 @@ impl_binance!(
         payout::initiate::Request,
         BatchPayout
     ),
-    (SubMerchantResult, SubMerchantRequest, CreateSubMerchant),
+    (
+        sub_merchant::create::SubMerchantResult,
+        sub_merchant::create::SubMerchantRequest,
+        CreateSubMerchant
+    ),
     (payout::query::Response, payout::query::Request, PayoutQuery)
 );
 
