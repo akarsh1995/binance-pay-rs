@@ -54,6 +54,10 @@ pub trait Binance<D>: Serialize + Sized
 where
     D: DeserializeOwned,
 {
+    #[deprecated(
+        since = "0.3.2",
+        note = "Use respective action method instead, e.g. .create(), .query(), etc."
+    )]
     async fn post(&self, client: &client::Client) -> Result<D> {
         let response = client
             .post_signed_s::<Response<D>, Self>(self.get_api().into(), Some(self))
