@@ -3,7 +3,6 @@ use bpay::api::order::create::{
     Currency, Env, Goods, GoodsCategory, GoodsType, Request as OrderRequest,
     Response as OrderResponse, TerminalType,
 };
-use bpay::api::Binance;
 use bpay::client::Client;
 use tokio;
 
@@ -27,7 +26,7 @@ async fn create_dummy_order(
         },
     };
 
-    Ok(order.post(client).await?)
+    Ok(order.create(client).await?)
 }
 
 #[tokio::main]
@@ -40,7 +39,7 @@ async fn main() -> bpay::errors::Result<()> {
     // close the order
     let close_order_request = CloseOrderRequest::new(None, Some(merchant_trade_no.to_string()));
 
-    let close_order_result = close_order_request.post(&client).await?;
+    let close_order_result = close_order_request.close(&client).await?;
     match close_order_result {
         CloseOrderResponse::Success => println!("Order closed successfully"),
         CloseOrderResponse::Failure => println!("Order could not be closed"),

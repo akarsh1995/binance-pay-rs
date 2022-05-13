@@ -19,7 +19,6 @@ tokio = { version = "1.18.0", features = ["rt-multi-thread", "macros"] }
 use bpay::api::order::create::{
     Currency, Env, Goods, GoodsCategory, GoodsType, Request as OrderRequest, TerminalType,
 };
-use bpay::api::Binance;
 use bpay::client::Client;
 use bpay::utils::create_nonce;
 # #[cfg(test)]
@@ -70,7 +69,7 @@ async fn main() {
     #     .with_header("content-type", "application/json")
     #     .with_body(response)
     #     .create();
-    let create_order_result = order.post(&client).await.unwrap();
+    let create_order_result = order.create(&client).await.unwrap();
     match create_order_result.terminal_type {
         TerminalType::Web => assert!(true),
         _ => assert!(false),
