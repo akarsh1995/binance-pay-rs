@@ -70,10 +70,10 @@ async fn main() {
     #     .with_body(response)
     #     .create();
     let create_order_result = order.create(&client).await.unwrap();
-    match create_order_result.terminal_type {
-        TerminalType::Web => assert!(true),
-        _ => assert!(false),
-    }
+    println!(
+        "This url can be sent across to complete the payment procedure: {}",
+        create_order_result.universal_url
+    );
 }
  ```
 */
