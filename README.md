@@ -78,7 +78,7 @@ async fn main() -> Result<()> {
 cargo run --example notification_axum_server
 ```
 
-### Contributing:
+## Contributing:
 
 
 Simply create a pull request. Properly documented code and tests.  
