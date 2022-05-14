@@ -22,6 +22,7 @@ The current version implements all the API endpoints as documented in the Binanc
 ## Quickstart
 
 Make sure the following env variables are set:
+> To generate the api key visit [Developers](https://merchant.binance.com/en/dashboard/developers)
   - `BINANCE_PAY_API_KEY`
   - `BINANCE_PAY_API_SECRET`
   
