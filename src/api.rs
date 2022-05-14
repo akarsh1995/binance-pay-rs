@@ -1,5 +1,5 @@
 //! Use Binance [`client::Client`] in conjunction with the Request Response structs.
-//! - [`create_order::Order`] and [`create_order::CreateOrderResult`]
+//! - [`order::create::Request`] and [`order::create::Response`]
 
 use self::webhook::certificate::{Certificate, CertificateResult};
 use crate::c2b::webhook::verification::Verifier;
