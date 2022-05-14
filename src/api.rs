@@ -54,6 +54,10 @@ pub trait Binance<D>: Serialize + Sized
 where
     D: DeserializeOwned,
 {
+    #[deprecated(
+        since = "0.3.2",
+        note = "Use respective action method instead, e.g. .create(), .query(), etc."
+    )]
     async fn post(&self, client: &client::Client) -> Result<D> {
         let response = client
             .post_signed_s::<Response<D>, Self>(self.get_api().into(), Some(self))
@@ -64,62 +68,69 @@ where
     fn get_api(&self) -> API;
 }
 
-#[macro_export]
+/// implelments the trait [`Binance`] for all the requests.
+/// follows pattern (moule::{action}, api_endpoint)
 macro_rules! impl_binance {
-    ($(($x: ty, $y: ty, $z: ident)),+) => {
-            $(
-                impl Binance<$x> for $y {
-                    fn get_api(&self) -> API {
-                        API::$z
-                    }
+    (
+        $(($x: ident::$y: ident, $z: ident)),*
+    ) => {
+        $(
+            impl Binance<$x::$y::Response> for $x::$y::Request {
+                fn get_api(&self) -> API {
+                    API::$z
                 }
-            )+
+            }
+
+            impl $x::$y::Request {
+                pub async fn $y(&self, client: &Client) -> Result<$x::$y::Response>  {
+                    let response = client
+                        .post_signed_s::<Response<$x::$y::Response>, Self>(self.get_api().into(), Some(self))
+                        .await?;
+                    Ok(response.data)
+                }
+            }
+        )*
     };
 }
 
 impl_binance!(
-    (order::create::Response, order::create::Request, CreateOrder),
-    (Vec<CertificateResult>, Certificate, QueryCertificate),
-    (order::query::Response, order::query::Request, QueryOrder),
-    (order::close::Response, order::close::Request, CloseOrder),
-    (
-        refund::initiate::Response,
-        refund::initiate::Request,
-        RefundOrder
-    ),
-    (
-        wallet_balance::query::Response,
-        wallet_balance::query::Request,
-        BalanceQuery
-    ),
-    (
-        transfer::initiate::Response,
-        transfer::initiate::Request,
-        TransferFund
-    ),
-    (
-        transfer::query::Response,
-        transfer::query::Request,
-        QueryTransfer
-    ),
-    (refund::query::Response, refund::query::Request, QueryRefund),
-    (
-        payout::initiate::Response,
-        payout::initiate::Request,
-        BatchPayout
-    ),
-    (
-        sub_merchant::create::Response,
-        sub_merchant::create::Request,
-        CreateSubMerchant
-    ),
-    (payout::query::Response, payout::query::Request, PayoutQuery)
+    (order::create, CreateOrder),
+    (order::query, QueryOrder),
+    (order::close, CloseOrder),
+    (refund::initiate, RefundOrder),
+    (wallet_balance::query, BalanceQuery),
+    (transfer::initiate, TransferFund),
+    (transfer::query, QueryTransfer),
+    (refund::query, QueryRefund),
+    (payout::initiate, BatchPayout),
+    (sub_merchant::create, CreateSubMerchant),
+    (payout::query, PayoutQuery)
 );
+
+impl Binance<CertificateResult> for Certificate {
+    fn get_api(&self) -> API {
+        API::QueryCertificate
+    }
+}
+
+impl Certificate {
+    pub async fn fetch(&self, client: &Client) -> Result<CertificateResult> {
+        let mut response = client
+            .post_signed_s::<Response<Vec<CertificateResult>>, Certificate>(
+                API::QueryCertificate.into(),
+                Some(self),
+            )
+            .await?;
+        Ok(response
+            .data
+            .pop()
+            .expect("Couldn't find the certificate inside the response array"))
+    }
+}
 
 /// Get certificate out of the received response array.
 pub async fn get_certificate(client: &Client) -> Result<CertificateResult> {
-    let mut certs_arr = Certificate.post(client).await?;
-    Ok(certs_arr.pop().expect("No certificates found"))
+    Ok(Certificate.fetch(client).await?)
 }
 
 /// Get [`Verifier`] directly from the api.

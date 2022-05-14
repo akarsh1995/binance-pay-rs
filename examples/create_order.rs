@@ -1,7 +1,6 @@
 use bpay::api::order::create::{
     Currency, Env, Goods, GoodsCategory, GoodsType, Request as OrderRequest, TerminalType,
 };
-use bpay::api::Binance;
 use bpay::client::Client;
 use bpay::errors::Result;
 use bpay::utils::create_nonce;
@@ -26,7 +25,7 @@ async fn main() -> Result<()> {
     };
 
     let client = Client::from_env();
-    let create_order_result = order.post(&client).await?;
+    let create_order_result = order.create(&client).await?;
     println!(
         "This url can be sent across to complete the payment procedure: {}",
         create_order_result.universal_url
