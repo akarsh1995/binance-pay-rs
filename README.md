@@ -17,24 +17,24 @@ Unofficial Rust Library for the [Binance Pay API](https://developers.binance.com
 [crates-url]: https://crates.io/crates/binance-pay-rs
 
 > :warning: The APIs are expected to work fine, still, **You might encounter bugs. Please use at your own risk.**   
-The current version implements all the API endpoints as documented in the Binance pay developer documentation.
+The current version implements all the API endpoints as documented in the Binance pay [developer documentation](https://developers.binance.com/docs/binance-pay/api-order-create-v2).
 
 ## Quickstart
 
-Make sure the following env variables are set:
+**Make sure the following env variables are set:**
 > To generate the api key visit [Developers](https://merchant.binance.com/en/dashboard/developers)
   - `BINANCE_PAY_API_KEY`
   - `BINANCE_PAY_API_SECRET`
   
 
-In your `Cargo.toml` file
+**In your `Cargo.toml` file**
 ```toml
 [dependencies]
 binance-pay-rs = "^0"
 tokio = { version = "1.18.0", features = ["rt-multi-thread", "macros"] }
 ```
 
-In your `main.rs` file
+**In your `main.rs` file**
 
 ```rust
 use bpay::api::order::create::{
