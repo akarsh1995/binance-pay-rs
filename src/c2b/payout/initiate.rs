@@ -35,49 +35,49 @@ pub enum ReceiveType {
 #[serde(rename_all = "camelCase")]
 pub struct TransferDetailReq {
     /// The unique ID assigned by the merchant to identify a detail transfer.
-    merchant_send_id: String,
+    pub merchant_send_id: String,
 
     /// Receiver's ID type  support payout to non-binance users
-    receive_type: ReceiveType,
+    pub receive_type: ReceiveType,
 
     /// If it is a non-binance user email address, he or she needs to register a binance account to receive the payout.  
     /// The amount will be automatically refunded to your wallet if receivers haven't completed the registration with 72 hours.
-    receiver: String,
+    pub receiver: String,
 
     /// The transfer value cannot be less than 2 USD Transfer amount.
-    transfer_amount: f64,
+    pub transfer_amount: f64,
 
-    transfer_method: TransferMethod,
+    pub transfer_method: TransferMethod,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Maximum length 128	Remark
-    remark: Option<String>,
+    pub remark: Option<String>,
 }
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Request {
     /// The unique ID assigned by the merchant to identify a payout request.
-    request_id: String,
+    pub request_id: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Describe the business scene of this payout.
-    biz_scene: Option<BizScene>,
+    pub biz_scene: Option<BizScene>,
 
     /// The name of the batch payout.
-    batch_name: String,
+    pub batch_name: String,
 
     /// Crypto token only, fiat NOT supported. All characters must be in uppercase	All the transfers under this batch must use the same currency.
-    currency: String,
+    pub currency: String,
 
     /// It must be equal to the sum of all the detail transfers.
-    total_amount: f64,
+    pub total_amount: f64,
 
     /// The total number of transfers. It must be equal to the detail transfer count.
-    total_number: u8,
+    pub total_number: u8,
 
     /// Detail transfer list
-    transfer_detail_list: Vec<TransferDetailReq>,
+    pub transfer_detail_list: Vec<TransferDetailReq>,
 }
 
 #[derive(Deserialize, Debug)]

@@ -6,67 +6,67 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct Request {
     ///	The sub merchant name maximum length 128, unique under one mainMerchantId.
-    merchant_name: String,
+    pub merchant_name: String,
 
     /// 1=Personal(Individual)、2=solo proprietor、 3=Partnership、4=Private company、5=Others company
-    merchant_type: u8,
+    pub merchant_type: u8,
 
     ///	Specified code	MCC Code, get from Binance
-    merchant_mcc: String,
+    pub merchant_mcc: String,
 
     ///	sub merchant logo url
-    brand_logo: Option<String>,
+    pub brand_logo: Option<String>,
 
-    /// Iso alpha 2 country code(https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2),
+    /// Iso alpha 2 country code(<https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>),
     /// use "GO" if global	Country/Region of Business Operation,Can be multiple, split by "," eg:"SG,US"
-    country: String,
+    pub country: String,
 
     ///	store address
-    address: Option<String>,
+    pub address: Option<String>,
 
     ///	The legal name that is used in the registration, Required if merchantType is not Individual
-    company_name: Option<String>,
+    pub company_name: Option<String>,
 
     ///	Registration number/Company tax ID, Required if merchantType is not Individual
-    registration_number: Option<String>,
+    pub registration_number: Option<String>,
 
-    ///	Iso alpha 2 country code(https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2),
+    ///	Iso alpha 2 country code(<https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>),
     ///	Country of Registration, Required if merchantType is not Individual
-    registration_country: Option<String>,
+    pub registration_country: Option<String>,
 
     ///	Country of Registration, Required if merchantType is not Individual
-    registration_address: Option<String>,
+    pub registration_address: Option<String>,
 
     ///	UnixTimestamp in milliseconds. The date when the business registration is in effective, Required if merchantType is not Individual
-    incorporation_date: Option<u64>,
+    pub incorporation_date: Option<u64>,
 
     ///	0=Online 1=Physical
-    store_type: Option<u8>,
+    pub store_type: Option<u8>,
 
     ///	1,2,3,4	1=Web 2=App 3=Binance applets 4=Others , Required if merchantType is not Individual
-    site_type: Option<u8>,
+    pub site_type: Option<u8>,
 
     ///	The URL of the website, Required if siteType is Web
-    site_url: Option<String>,
+    pub site_url: Option<String>,
 
     ///	The name of the website, Required if siteType is Web or App or Binance applets
-    site_name: Option<String>,
+    pub site_name: Option<String>,
 
     ///	1=ID 2=Passport, Required if merchantType is Individual
-    certificate_type: Option<u8>,
+    pub certificate_type: Option<u8>,
 
-    ///	iso alpha 2 country code(https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2),
+    ///	iso alpha 2 country code(<https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>),
     /// Required if merchantType is Individual
-    certificate_country: Option<String>,
+    pub certificate_country: Option<String>,
 
     ///	Required if merchantType is Individual
-    certificate_number: Option<String>,
+    pub certificate_number: Option<String>,
 
     ///	UnixTimestamp in milliseconds	Certificate Valid Date, Required if merchantType is Individual
-    certificate_valid_date: Option<u64>,
+    pub certificate_valid_date: Option<u64>,
 
     ///	UnixTimestamp in milliseconds	Contract date with ISV
-    contract_time_isv: Option<u64>,
+    pub contract_time_isv: Option<u64>,
 }
 
 #[derive(Debug, Deserialize)]
