@@ -7,13 +7,13 @@ Unofficial Rust Library for the [Binance Pay API](https://developers.binance.com
 [![Discord chat][discord-badge]][discord-url]
 
 
-[actions-badge]: https://img.shields.io/github/workflow/status/akarsh1995/binance-pay-rs/Continuous%20integration?style=for-the-badge
+[actions-badge]: https://img.shields.io/github/workflow/status/akarsh1995/binance-pay-rs/Continuous%20integration?style=for-the-badge&logo=githubactions&logoColor=white
 [actions-url]: https://github.com/akarsh1995/binance-pay-rs/actions
 
-[discord-badge]: https://img.shields.io/discord/974880467801235546?style=for-the-badge
+[discord-badge]: https://img.shields.io/discord/974880467801235546?style=for-the-badge&logo=discord&logoColor=white
 [discord-url]: https://discord.gg/Y5yxfQUC
 
-[crates-badge]: https://img.shields.io/crates/v/binance-pay-rs?style=for-the-badge
+[crates-badge]: https://img.shields.io/crates/v/binance-pay-rs?style=for-the-badge&logo=rust
 [crates-url]: https://crates.io/crates/binance-pay-rs
 
 > :warning: The APIs are expected to work fine, still, **You might encounter bugs. Please use at your own risk.**   
